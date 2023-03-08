@@ -17,7 +17,7 @@ public class Question {
     private String secretString = "";
     private String userString = "";
     private HashMap<Character, ArrayList<Integer>> charactersCount;
-
+    
     public Question(String secretString) {
         this.setSecretString(secretString);
         this.resetString();
@@ -57,6 +57,10 @@ public class Question {
 
     public void setCharactersCount(HashMap<Character, ArrayList<Integer>> charactersCount) {
         this.charactersCount = charactersCount;
+    }
+
+    public boolean isCompleted() {
+        return secretString.equalsIgnoreCase(userString);
     }
     
     public void resetString() {

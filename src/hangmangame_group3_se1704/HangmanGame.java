@@ -6,6 +6,7 @@
 package hangmangame_group3_se1704;
 
 import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
 import java.util.HashMap;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
@@ -22,9 +23,10 @@ public class HangmanGame extends javax.swing.JFrame {
     private int level;
     private String currentDifficulty;
     
+    private Hangman hangMan;
+    
     private HashMap<String, Integer> difficultyFactors;
     
-    private int life;
     private char playerChoice;
     
     private Question question;
@@ -47,14 +49,6 @@ public class HangmanGame extends javax.swing.JFrame {
 
     public void setLevel(int level) {
         this.level = level;
-    }
-
-    public int getLife() {
-        return life;
-    }
-
-    public void setLife(int life) {
-        this.life = life;
     }
 
     public char getPlayerChoice() {
@@ -114,22 +108,68 @@ public class HangmanGame extends javax.swing.JFrame {
         
         hCanvas = new HangmanCanvas();
         pnlDrawHangman.setLayout(new BorderLayout());
-        pnlDrawHangman.add(hCanvas, BorderLayout.CENTER);    
+        pnlDrawHangman.add(hCanvas, BorderLayout.CENTER);
         score = 0;
+        
+        hangMan = hCanvas.getHangMan();
+        
         // temporary data for testing
         this.question = new Question("ONTARIO");
-        this.setCurrentDifficulty("easy");
+        this.setCurrentDifficulty("medium");
         this.setDifficultyFactors(currentDifficulty);
-        txtSecretWord.setText(question.getUserString());
+        String properDifficulty = Character.toUpperCase(currentDifficulty.charAt(0)) + currentDifficulty.substring(1);
+        
         StyledDocument doc = txtSecretWord.getStyledDocument();
         SimpleAttributeSet center = new SimpleAttributeSet();
         StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
         doc.setParagraphAttributes(0, doc.getLength(), center, false);
-        this.setLife(10);
+        txtSecretWord.setText(question.getUserString());
+        lblDifficulty.setText(properDifficulty);
+        /*
+        btnA.addActionListener(this);
+        btnB.addActionListener(this);
+        btnC.addActionListener(this);
+        btnD.addActionListener(this);
+        btnE.addActionListener(this);
+        btnF.addActionListener(this);
+        btnG.addActionListener(this);
+        btnH.addActionListener(this);
+        btnI.addActionListener(this);
+        btnJ.addActionListener(this);
+        btnK.addActionListener(this);
+        btnL.addActionListener(this);
+        btnM.addActionListener(this);
+        btnN.addActionListener(this);
+        btnO.addActionListener(this);
+        btnP.addActionListener(this);
+        btnQ.addActionListener(this);
+        btnR.addActionListener(this);
+        btnS.addActionListener(this);
+        btnT.addActionListener(this);
+        btnU.addActionListener(this);
+        btnV.addActionListener(this);
+        btnW.addActionListener(this);
+        btnX.addActionListener(this);
+        btnY.addActionListener(this);
+        btnZ.addActionListener(this);
+        */
+    }
+    
+    public void increaseScore() {
+        this.setScore(this.getScore() + 100*difficultyFactors.get(currentDifficulty));
+        updateScoreText();
+    }
+    
+    public void updateScoreText() {
+        lblPlayerScore.setText(this.getScore()+"");
+    }
+    
+    public boolean isLevelCompleted() {
+        return this.question.isCompleted();
     }
 
     public boolean isGameOver() {
-        return life == 0;
+        return this.hangMan.getState() == 9;
     }
 
     public boolean isCorrect() {
@@ -140,10 +180,6 @@ public class HangmanGame extends javax.swing.JFrame {
         return !isCorrect();
     }
     
-    public void increaseScore() {
-        this.setScore(this.getScore() + 100*difficultyFactors.get(currentDifficulty));
-    }
-    
     public void updateHiddenText() {
         question.updateString(playerChoice);
         txtSecretWord.setText(question.getUserString());
@@ -151,6 +187,26 @@ public class HangmanGame extends javax.swing.JFrame {
         SimpleAttributeSet center = new SimpleAttributeSet();
         StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
         doc.setParagraphAttributes(0, doc.getLength(), center, false);
+    }
+    
+    public void gameOver() {
+        
+    }
+    
+    public void letterActionPerformed(ActionEvent e) {
+        if (isCorrect()) {
+            increaseScore();
+            updateHiddenText();
+        } else {
+            this.hCanvas.getHangMan().increaseState();
+            pnlDrawHangman.repaint();
+        }
+        
+        if (isLevelCompleted()) {
+            // proceeds to next level
+        } else if (isGameOver()) {
+            // stops current game, display score
+        }
     }
 
     /**
@@ -206,7 +262,7 @@ public class HangmanGame extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         lblDifficulty = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
+        lblPlayerScore = new javax.swing.JLabel();
         pnlDrawHangman = new javax.swing.JPanel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
@@ -589,7 +645,7 @@ public class HangmanGame extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addGap(103, 103, 103)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 112, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnF, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -637,9 +693,9 @@ public class HangmanGame extends javax.swing.JFrame {
 
         lblDifficulty.setText("Easy");
 
-        jLabel2.setText("Current Score:");
+        jLabel2.setText("Player Score");
 
-        jLabel3.setText("0");
+        lblPlayerScore.setText("0");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -648,19 +704,17 @@ public class HangmanGame extends javax.swing.JFrame {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabel3))
+                    .addComponent(jLabel12)
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel2))
+                .addGap(21, 21, 21)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblDifficulty, javax.swing.GroupLayout.DEFAULT_SIZE, 195, Short.MAX_VALUE)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel12)
-                            .addComponent(jLabel1))
-                        .addGap(32, 32, 32)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblDifficulty, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(lblLevel, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(lblPlayerScore, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(lblLevel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addContainerGap())))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -676,21 +730,22 @@ public class HangmanGame extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(jLabel3))
+                    .addComponent(lblPlayerScore))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pnlDrawHangman.setBorder(javax.swing.BorderFactory.createTitledBorder("Hangman Painting"));
+        pnlDrawHangman.setPreferredSize(new java.awt.Dimension(300, 380));
 
         javax.swing.GroupLayout pnlDrawHangmanLayout = new javax.swing.GroupLayout(pnlDrawHangman);
         pnlDrawHangman.setLayout(pnlDrawHangmanLayout);
         pnlDrawHangmanLayout.setHorizontalGroup(
             pnlDrawHangmanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 290, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
         pnlDrawHangmanLayout.setVerticalGroup(
             pnlDrawHangmanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 358, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
 
         jMenu1.setText("New Game");
@@ -741,10 +796,8 @@ public class HangmanGame extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(pnlDrawHangman, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(pnlDrawHangman, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(6, 6, 6)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -755,9 +808,9 @@ public class HangmanGame extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(pnlDrawHangman, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(pnlDrawHangman, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
 
@@ -771,114 +824,183 @@ public class HangmanGame extends javax.swing.JFrame {
     private void btnAActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAActionPerformed
         // TODO add your handling code here:
         playerChoice = 'A';
-        if (isCorrect()) {
-            increaseScore();
-            updateHiddenText();
-        } else {
-            // draws next step of Hangman
-            life--;
-        }
+        letterActionPerformed(evt);
         btnA.setEnabled(false);
     }//GEN-LAST:event_btnAActionPerformed
 
     private void btnBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBActionPerformed
         // TODO add your handling code here:
+        playerChoice = 'B';
+        letterActionPerformed(evt);
+        btnB.setEnabled(false);
     }//GEN-LAST:event_btnBActionPerformed
 
     private void btnCActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCActionPerformed
         // TODO add your handling code here:
+        playerChoice = 'C';
+        letterActionPerformed(evt);
+        btnC.setEnabled(false);
     }//GEN-LAST:event_btnCActionPerformed
 
     private void btnDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDActionPerformed
         // TODO add your handling code here:
+        playerChoice = 'D';
+        letterActionPerformed(evt);
+        btnD.setEnabled(false);
     }//GEN-LAST:event_btnDActionPerformed
 
     private void btnEActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEActionPerformed
         // TODO add your handling code here:
+        playerChoice = 'E';
+        letterActionPerformed(evt);
+        btnE.setEnabled(false);
     }//GEN-LAST:event_btnEActionPerformed
 
     private void btnFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFActionPerformed
         // TODO add your handling code here:
+        playerChoice = 'F';
+        letterActionPerformed(evt);
+        btnF.setEnabled(false);
     }//GEN-LAST:event_btnFActionPerformed
 
     private void btnGActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGActionPerformed
         // TODO add your handling code here:
+        playerChoice = 'G';
+        letterActionPerformed(evt);
+        btnG.setEnabled(false);
     }//GEN-LAST:event_btnGActionPerformed
 
     private void btnHActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHActionPerformed
         // TODO add your handling code here:
+        playerChoice = 'H';
+        letterActionPerformed(evt);
+        btnH.setEnabled(false);
     }//GEN-LAST:event_btnHActionPerformed
 
     private void btnIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIActionPerformed
         // TODO add your handling code here:
+        playerChoice = 'I';
+        letterActionPerformed(evt);
+        btnI.setEnabled(false);
     }//GEN-LAST:event_btnIActionPerformed
 
     private void btnJActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnJActionPerformed
         // TODO add your handling code here:
+        playerChoice = 'J';
+        letterActionPerformed(evt);
+        btnJ.setEnabled(false);
     }//GEN-LAST:event_btnJActionPerformed
 
     private void btnKActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnKActionPerformed
         // TODO add your handling code here:
+        playerChoice = 'K';
+        letterActionPerformed(evt);
+        btnK.setEnabled(false);
     }//GEN-LAST:event_btnKActionPerformed
 
     private void btnLActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLActionPerformed
         // TODO add your handling code here:
+        playerChoice = 'L';
+        letterActionPerformed(evt);
+        btnL.setEnabled(false);
     }//GEN-LAST:event_btnLActionPerformed
 
     private void btnMActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMActionPerformed
         // TODO add your handling code here:
+        playerChoice = 'M';
+        letterActionPerformed(evt);
+        btnM.setEnabled(false);
     }//GEN-LAST:event_btnMActionPerformed
 
     private void btnNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNActionPerformed
         // TODO add your handling code here:
+        playerChoice = 'N';
+        letterActionPerformed(evt);
+        btnN.setEnabled(false);
     }//GEN-LAST:event_btnNActionPerformed
 
     private void btnOActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOActionPerformed
         // TODO add your handling code here:
+        playerChoice = 'O';
+        letterActionPerformed(evt);
+        btnO.setEnabled(false);
     }//GEN-LAST:event_btnOActionPerformed
 
     private void btnPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPActionPerformed
         // TODO add your handling code here:
+        playerChoice = 'P';
+        letterActionPerformed(evt);
+        btnP.setEnabled(false);
     }//GEN-LAST:event_btnPActionPerformed
 
     private void btnQActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnQActionPerformed
         // TODO add your handling code here:
+        playerChoice = 'Q';
+        letterActionPerformed(evt);
+        btnQ.setEnabled(false);
     }//GEN-LAST:event_btnQActionPerformed
 
     private void btnRActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRActionPerformed
         // TODO add your handling code here:
+        playerChoice = 'R';
+        letterActionPerformed(evt);
+        btnR.setEnabled(false);
     }//GEN-LAST:event_btnRActionPerformed
 
     private void btnSActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSActionPerformed
         // TODO add your handling code here:
+        playerChoice = 'S';
+        letterActionPerformed(evt);
+        btnS.setEnabled(false);
     }//GEN-LAST:event_btnSActionPerformed
 
     private void btnTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTActionPerformed
         // TODO add your handling code here:
+        playerChoice = 'T';
+        letterActionPerformed(evt);
+        btnT.setEnabled(false);
     }//GEN-LAST:event_btnTActionPerformed
 
     private void btnUActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUActionPerformed
         // TODO add your handling code here:
+        playerChoice = 'U';
+        letterActionPerformed(evt);
+        btnU.setEnabled(false);
     }//GEN-LAST:event_btnUActionPerformed
 
     private void btnVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVActionPerformed
         // TODO add your handling code here:
+        playerChoice = 'V';
+        letterActionPerformed(evt);
+        btnV.setEnabled(false);
     }//GEN-LAST:event_btnVActionPerformed
 
     private void btnWActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnWActionPerformed
         // TODO add your handling code here:
+        playerChoice = 'W';
+        letterActionPerformed(evt);
+        btnW.setEnabled(false);
     }//GEN-LAST:event_btnWActionPerformed
 
     private void btnXActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXActionPerformed
         // TODO add your handling code here:
+        playerChoice = 'X';
+        letterActionPerformed(evt);
+        btnX.setEnabled(false);
     }//GEN-LAST:event_btnXActionPerformed
 
     private void btnYActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnYActionPerformed
         // TODO add your handling code here:
+        playerChoice = 'Y';
+        letterActionPerformed(evt);
+        btnY.setEnabled(false);
     }//GEN-LAST:event_btnYActionPerformed
 
     private void btnZActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnZActionPerformed
         // TODO add your handling code here:
+        playerChoice = 'Z';
+        letterActionPerformed(evt);
+        btnZ.setEnabled(false);
     }//GEN-LAST:event_btnZActionPerformed
 
     /**
@@ -946,7 +1068,6 @@ public class HangmanGame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
@@ -963,6 +1084,7 @@ public class HangmanGame extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblDifficulty;
     private javax.swing.JLabel lblLevel;
+    private javax.swing.JLabel lblPlayerScore;
     private javax.swing.JPanel pnlDrawHangman;
     private javax.swing.JTextPane txtSecretWord;
     // End of variables declaration//GEN-END:variables

@@ -14,12 +14,25 @@ import javax.swing.JPanel;
  * @author CE171454 Hua Tien Thanh
  */
 public class HangmanCanvas extends JPanel{
-    Graphics2D g;
-    Hangman hman = new Hangman("easy");
+    private Graphics2D g = null;
+    Hangman hangMan;
+    
+    public HangmanCanvas() {
+        hangMan = new Hangman("medium");
+    }
+
+    public Hangman getHangMan() {
+        return hangMan;
+    }
+
+    public void setHangMan(Hangman hangMan) {
+        this.hangMan = hangMan;
+    }
+    
     @Override
     public void paint(Graphics graphics) {
         super.paint(graphics);
         this.g = (Graphics2D) graphics;
-        hman.draw(g);
+        hangMan.draw(g);
     }
 }
