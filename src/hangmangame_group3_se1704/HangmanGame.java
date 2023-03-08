@@ -114,8 +114,7 @@ public class HangmanGame extends javax.swing.JFrame {
         
         hCanvas = new HangmanCanvas();
         pnlDrawHangman.setLayout(new BorderLayout());
-        pnlDrawHangman.add(hCanvas, BorderLayout.CENTER);
-        
+        pnlDrawHangman.add(hCanvas, BorderLayout.CENTER);    
         score = 0;
         // temporary data for testing
         this.question = new Question("ONTARIO");
