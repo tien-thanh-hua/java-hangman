@@ -14,15 +14,16 @@ import java.util.HashMap;
  * @author CE171454 Hua Tien Thanh
  */
 public class Question {
+
     private String secretString = "";
     private String userString = "";
     private HashMap<Character, ArrayList<Integer>> charactersCount;
-    
+
     public Question(String secretString) {
-        this.setSecretString(secretString);
-        this.resetString();
-        this.setCharactersCount(new HashMap<>());
-        
+        this.secretString = secretString;
+        this.resetUserString();
+
+        this.charactersCount = new HashMap<>();
         for (int i = 0; i < getLength(); i++) {
             Character currentChar = secretString.charAt(i);
             ArrayList<Integer> newArr = new ArrayList<>();
@@ -46,7 +47,7 @@ public class Question {
     public void setUserString(String userString) {
         this.userString = userString;
     }
-    
+
     public int getLength() {
         return this.secretString.length();
     }
@@ -62,8 +63,8 @@ public class Question {
     public boolean isCompleted() {
         return secretString.equalsIgnoreCase(userString);
     }
-    
-    public void resetString() {
+
+    public void resetUserString() {
         this.setUserString(String.join("", Collections.nCopies(secretString.length(), "_")));
     }
 
