@@ -20,7 +20,7 @@ public class Question {
 
     public Question(String secretString) {
         this.setSecretString(secretString);
-        this.setUserString(String.join("", Collections.nCopies(secretString.length(), "_")));
+        this.resetString();
         this.setCharactersCount(new HashMap<>());
         
         for (int i = 0; i < getLength(); i++) {
@@ -57,6 +57,10 @@ public class Question {
 
     public void setCharactersCount(HashMap<Character, ArrayList<Integer>> charactersCount) {
         this.charactersCount = charactersCount;
+    }
+    
+    public void resetString() {
+        this.setUserString(String.join("", Collections.nCopies(secretString.length(), "_")));
     }
 
     public void updateString(char c) {
