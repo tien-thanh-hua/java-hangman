@@ -5,6 +5,7 @@
  */
 package hangmangame_group3_se1704;
 
+import entities.Hangman;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import javax.swing.JPanel;
@@ -15,10 +16,10 @@ import javax.swing.JPanel;
  */
 public class HangmanCanvas extends JPanel{
     private Graphics2D g = null;
-    Hangman hangMan;
+    Hangman hangMan = null;
     
-    public HangmanCanvas() {
-        hangMan = new Hangman("medium");
+    public HangmanCanvas(Hangman hangman) {
+        this.hangMan = hangman;
     }
 
     public Hangman getHangMan() {

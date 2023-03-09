@@ -12,12 +12,12 @@ package ui;
 public class DifficultyFrame extends javax.swing.JFrame {
     
     public void startMainGame(String difficulty) {
-        if (HangmanGame.mainGame == null) {
-            HangmanGame hangmanGame = new HangmanGame();
-            hangmanGame.show();
-            hangmanGame.setDifficulty(difficulty);
+        if (MainGameFrame.gameFrame == null) {
+            MainGameFrame frame = new MainGameFrame();
+            frame.setDifficulty(difficulty);
+            frame.show();
         } else {
-            HangmanGame.mainGame.setDifficulty(difficulty);
+            MainGameFrame.gameFrame.setDifficulty(difficulty);
         }
         this.dispose();
     }
