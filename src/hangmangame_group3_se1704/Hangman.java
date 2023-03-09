@@ -88,6 +88,7 @@ public class Hangman {
         g.draw(new Line2D.Float(BASE_X - 30, BASE_Y, BASE_X + 30, BASE_Y));
         switch (state) {
             case 9:
+                g.setColor(Color.red); // game over: entire hangman turns red
                 g.draw(new Line2D.Float(LEGS_TOP_X, LEGS_TOP_Y, RIGHT_LEG_X, LEGS_BOTTOM_Y));
             case 8:
                 g.draw(new Line2D.Float(LEGS_TOP_X, LEGS_TOP_Y, LEFT_LEG_X, LEGS_BOTTOM_Y));
