@@ -8,6 +8,24 @@ package hangmangame_group3_se1704;
 import entities.Hangman;
 import entities.Player;
 import entities.Question;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.file.FileAlreadyExistsException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.InputMismatchException;
+import java.util.NoSuchElementException;
+import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -24,6 +42,7 @@ public class GameInstance {
     private Hangman hangMan;
     private Question question;
 
+    private ArrayList<Player> players;
     private Player player;
     private char playerChoice;
 
@@ -119,6 +138,82 @@ public class GameInstance {
     public void increaseScore() {
         this.setScore(this.getScore() + 100 * difficultyFactor);
     }
+    
+    public void readScoreFile() {
+        String playerName;
+        int playerScore;
+        ArrayList<Integer> playerScores;
+        boolean isFileSuccessfullyRead = false;
+        while (!isFileSuccessfullyRead) {
+            try {
+                File scoreFile = new File("/data/score.hsc");
+                Scanner fileSc = new Scanner(scoreFile);
+                while (fileSc.hasNextLine()) {
+                    playerName = fileSc.next();
+                    fileSc.next();
+                    playerScore = fileSc.nextInt();
+                    if (getPlayerIndex(playerName) != -1) { // player already exists
+                        ArrayList<Integer> tempPlayerScores = players.get(getPlayerIndex(playerName)).getScores();
+                        tempPlayerScores.add(playerScore); // if not, add player to list
+                    } else {
+                        playerScores = new ArrayList<>();
+                        playerScores.add(playerScore);
+                        players.add(new Player(playerName, playerScores));
+                    }
+                }
+                fileSc.close();
+                isFileSuccessfullyRead = true;
+            } catch (FileNotFoundException e) {
+                // creates default score file
+                System.out.println("data/score.hsc not found.");
+                createScoreFile();
+                System.out.println("New score.hsc file has been created.");
+            } catch (InputMismatchException e) {
+                System.out.println("Error: cannot read score of a player");
+            } catch (NoSuchElementException e) {
+                System.out.println("Something bad happened: " + e.getMessage());
+            }
+        }
+    }
+    
+    public void createScoreFile() {
+        FileWriter fw = null;
+        try {
+            File scoreFile = new File("data/score.hsc");
+            Scanner fileSc = new Scanner(scoreFile);
+            // prints debug info to check for score.hsc's existence
+            if (scoreFile.isFile()) { // score.hsc exists and is not a directory
+                System.out.println("File score.hsc already exists");
+            }
+            
+            // writes default player info to new file if file is empty
+            BufferedReader br = new BufferedReader(new FileReader("data/score.hsc"));
+            if (br.readLine() == null) {
+                fw = new FileWriter("data/score.hsc", true);
+                fw.write("Player1 9001\n");
+                fw.write("Player2 5000\n");
+                fw.write("Player3 4000\n");
+                fw.write("Player1 2000\n");
+                fw.write("Player3 100\n");
+                fw.flush();
+                fw.close();
+                System.out.println("File score.hsc is empty. Default scores added.");
+            } else {
+                System.out.println("File score.hsc already has data. It has not been modified.");
+            }
+        } catch (IOException e) {
+            System.err.println("Cannot write data to \"score.hsc\": " + e.getMessage());
+        }
+    }
+    
+    public int getPlayerIndex(String playerName) {
+        for (int i = 0; i < players.size(); i++) {
+            if (players.contains(players.get(i))) {
+                return i;
+            }
+        }
+        return -1;
+    }
 
     public boolean isLevelCompleted() {
         return this.question.isCompleted();
@@ -146,6 +241,8 @@ public class GameInstance {
         this.question = new Question("ONTARIO");
         this.hangMan = new Hangman(difficulty);
         setDifficultyFactor(difficulty);
+        this.players = new ArrayList<>();
+        readScoreFile();
     }
 
     public void reset() {
