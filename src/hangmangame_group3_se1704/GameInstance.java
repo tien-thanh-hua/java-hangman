@@ -21,6 +21,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.InputMismatchException;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
@@ -146,16 +147,20 @@ public class GameInstance {
         boolean isFileSuccessfullyRead = false;
         while (!isFileSuccessfullyRead) {
             try {
-                File scoreFile = new File("/data/score.hsc");
+                File scoreFile = new File("data/score.hsc");
                 Scanner fileSc = new Scanner(scoreFile);
-                while (fileSc.hasNextLine()) {
+                while (fileSc.hasNext()) {
                     playerName = fileSc.next();
-                    fileSc.next();
+                    //fileSc.next();
                     playerScore = fileSc.nextInt();
                     if (getPlayerIndex(playerName) != -1) { // player already exists
-                        ArrayList<Integer> tempPlayerScores = players.get(getPlayerIndex(playerName)).getScores();
-                        tempPlayerScores.add(playerScore); // if not, add player to list
-                    } else {
+                        playerScores = players.get(getPlayerIndex(playerName)).getScores();
+                        if (!playerScores.contains(playerScore)) { // score has not existed for that player yet
+                            players.get(getPlayerIndex(playerName)).getScores().add(playerScore);
+                        }
+                        // there might still be issues if the score 
+                        // has not existed for that player yet, but for other players
+                    } else { // if not, add player to list
                         playerScores = new ArrayList<>();
                         playerScores.add(playerScore);
                         players.add(new Player(playerName, playerScores));
@@ -168,9 +173,8 @@ public class GameInstance {
                 System.out.println("data/score.hsc not found.");
                 createScoreFile();
                 System.out.println("New score.hsc file has been created.");
-            } catch (InputMismatchException e) {
-                System.out.println("Error: cannot read score of a player");
             } catch (NoSuchElementException e) {
+                isFileSuccessfullyRead = true; // technically not successful but it prevents infinite loop
                 System.out.println("Something bad happened: " + e.getMessage());
             }
         }
@@ -206,9 +210,24 @@ public class GameInstance {
         }
     }
     
+    public ArrayList<Integer> getTop5Scores() {
+        ArrayList<Integer> top5 = new ArrayList<>();
+        players.forEach((player) -> {
+            player.getScores().forEach((score) -> {
+                top5.add(score);
+            });
+        });
+        Collections.sort(top5);
+        Collections.reverse(top5);
+        for (int i = top5.size() - 1; i > 4; i--) {
+            top5.remove(i);
+        }
+        return top5;
+    }
+    
     public int getPlayerIndex(String playerName) {
         for (int i = 0; i < players.size(); i++) {
-            if (players.contains(players.get(i))) {
+            if (players.get(i).getName().equals(playerName)) {
                 return i;
             }
         }
@@ -243,6 +262,7 @@ public class GameInstance {
         setDifficultyFactor(difficulty);
         this.players = new ArrayList<>();
         readScoreFile();
+        getTop5Scores();
     }
 
     public void reset() {
