@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package hangmangame_group3_se1704;
+package ui;
 
 import entities.Hangman;
 import java.awt.Graphics;

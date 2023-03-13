@@ -57,17 +57,7 @@ public class Hangman {
     
     private int state;
     
-    public Hangman(String difficulty) {
-        switch (difficulty) {
-            case "normal":
-            case "hard":
-            case "asian":
-                state = 3;
-                break;
-            default:
-                state = 0;
-                break;
-        }
+    public Hangman() {
     }
 
     public int getState() {

@@ -9,24 +9,16 @@ import entities.Hangman;
 import entities.Player;
 import entities.Question;
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.nio.file.FileAlreadyExistsException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.InputMismatchException;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -99,32 +91,54 @@ public class GameInstance {
         return difficulty;
     }
 
+    /**
+     * Sets the difficulty for the game, which sets the initial state of the Hangman object.<br>
+     * If this method is called after the difficulty has been set at least once,
+     * then it will only update the difficulty, not resetting it.<br>
+     * Currently supported difficulties include:<br>
+     * <ul>
+     *  <li>"easy": state = 0</li>
+     *  <li>"normal": state = 3</li>
+     *  <li>"hard": state = 3</li>
+     *  <li>"asian": state = 3</li>
+     * </ul>
+     * @param difficulty (String) The difficulty to be set.
+     */
     public void setDifficulty(String difficulty) {
         this.difficulty = difficulty;
         setDifficultyFactor(difficulty);
+        int hangManState;
+        switch (difficulty) {
+            case "normal":
+            case "hard":
+            case "asian":
+                hangManState = 3;
+                break;
+            case "easy":
+            default:
+                hangManState = 0;
+                break;
+        }
+        this.hangMan.setState(hangManState);
     }
 
     public int getDifficultyFactor() {
         return difficultyFactor;
     }
-
-    public void setDifficultyFactor(int difficultyFactor) {
-        this.difficultyFactor = difficultyFactor;
-    }
-
+    
     public void setDifficultyFactor(String difficulty) {
         switch (difficulty) {
             case "easy":
                 setDifficultyFactor(1);
                 break;
             case "normal":
-                setDifficultyFactor(4);
+                setDifficultyFactor(2);
                 break;
             case "hard":
-                setDifficultyFactor(8);
+                setDifficultyFactor(3);
                 break;
             case "asian":
-                setDifficultyFactor(32);
+                setDifficultyFactor(8);
                 break;
             default:
                 setDifficultyFactor(0);
@@ -132,6 +146,10 @@ public class GameInstance {
         }
     }
 
+    public void setDifficultyFactor(int difficultyFactor) {
+        this.difficultyFactor = difficultyFactor;
+    }
+    
     public void updateUserString() {
         question.updateString(playerChoice);
     }
@@ -249,25 +267,23 @@ public class GameInstance {
     public void gameOver() {
         // if player score is amongst the top 5 high scores
         // prompts to save the player name and score
-        //newScoreDialog();
-
     }
 
-    public GameInstance(String difficulty) {
+    public GameInstance() {
         mainGame = this;
         this.score = 0;
         this.level = 0;
         this.question = new Question("ONTARIO");
-        this.hangMan = new Hangman(difficulty);
-        setDifficultyFactor(difficulty);
         this.players = new ArrayList<>();
+        this.hangMan = new Hangman();
+        
         readScoreFile();
         getTop5Scores();
     }
 
     public void reset() {
-        score = 0;
-        level = 0;
+        this.score = 0;
+        this.level = 0;
         // gets random string from file
         question.resetQuestion("HIKIKOMORI");
     }
