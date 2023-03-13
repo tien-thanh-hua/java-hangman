@@ -16,6 +16,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 import javax.swing.JOptionPane;
@@ -34,8 +35,8 @@ public class GameInstance {
 
     private Hangman hangMan;
     private Question question;
-
-    private ArrayList<Player> players;
+    
+    private ArrayList<Player> top5Players;
     private Player player;
     private char playerChoice;
 
@@ -95,6 +96,7 @@ public class GameInstance {
      * Sets the difficulty for the game, which sets the initial state of the Hangman object.<br>
      * If this method is called after the difficulty has been set at least once,
      * then it will only update the difficulty, not resetting it.<br>
+     * This method should only be used <strong>once</strong> per play-through.<br> 
      * Currently supported difficulties include:<br>
      * <ul>
      *  <li>"easy": state = 0</li>
@@ -149,6 +151,21 @@ public class GameInstance {
     public void setDifficultyFactor(int difficultyFactor) {
         this.difficultyFactor = difficultyFactor;
     }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
+    
+    public void savePlayer(String name) {
+        player.setName(name);
+        player.setScore(score);
+        top5Players.add(player);
+        updateTop5Players(top5Players);
+    }
     
     public void updateUserString() {
         question.updateString(playerChoice);
@@ -159,9 +176,9 @@ public class GameInstance {
     }
     
     public void readScoreFile() {
+        ArrayList<Player> players = new ArrayList<>();
         String playerName;
         int playerScore;
-        ArrayList<Integer> playerScores;
         boolean isFileSuccessfullyRead = false;
         while (!isFileSuccessfullyRead) {
             try {
@@ -172,18 +189,17 @@ public class GameInstance {
                     //fileSc.next();
                     playerScore = fileSc.nextInt();
                     if (getPlayerIndex(playerName) != -1) { // player already exists
-                        playerScores = players.get(getPlayerIndex(playerName)).getScores();
-                        if (!playerScores.contains(playerScore)) { // score has not existed for that player yet
-                            players.get(getPlayerIndex(playerName)).getScores().add(playerScore);
+                        int oldPlayerScore = players.get(getPlayerIndex(playerName)).getScore();
+                        if (playerScore > oldPlayerScore) { // score has not existed for that player yet
+                            players.get(getPlayerIndex(playerName)).setScore(playerScore);
                         }
                         // there might still be issues if the score 
                         // has not existed for that player yet, but for other players
                     } else { // if not, add player to list
-                        playerScores = new ArrayList<>();
-                        playerScores.add(playerScore);
-                        players.add(new Player(playerName, playerScores));
+                        players.add(new Player(playerName, playerScore));
                     }
                 }
+                updateTop5Players(players);
                 fileSc.close();
                 isFileSuccessfullyRead = true;
             } catch (FileNotFoundException e) {
@@ -227,25 +243,40 @@ public class GameInstance {
             System.err.println("Cannot write data to \"score.hsc\": " + e.getMessage());
         }
     }
+
+    public ArrayList<Player> getTop5Players() {
+        return top5Players;
+    }
+
+    public void setTop5Players(ArrayList<Player> top5Players) {
+        this.top5Players = top5Players;
+    }
     
-    public ArrayList<Integer> getTop5Scores() {
-        ArrayList<Integer> top5 = new ArrayList<>();
-        players.forEach((player) -> {
-            player.getScores().forEach((score) -> {
-                top5.add(score);
-            });
-        });
-        Collections.sort(top5);
+    public void updateTop5Players(ArrayList<Player> players) {
+        ArrayList<Player> top5 = players;
+        Comparator<Player> playerComparator = (Player p1, Player p2) -> {
+            int score1 = p1.getScore();
+            int score2 = p2.getScore();
+            if (score1 > score2) {
+                return 1;
+            } else if (score1 == score2) {
+                return 0;
+            } else {
+                return -1;
+            }
+        };
+        top5.sort(playerComparator); // sort ascendingly
         Collections.reverse(top5);
+        
         for (int i = top5.size() - 1; i > 4; i--) {
             top5.remove(i);
         }
-        return top5;
+        setTop5Players(top5);
     }
     
     public int getPlayerIndex(String playerName) {
-        for (int i = 0; i < players.size(); i++) {
-            if (players.get(i).getName().equals(playerName)) {
+        for (int i = 0; i < top5Players.size(); i++) {
+            if (top5Players.get(i).getName().equals(playerName)) {
                 return i;
             }
         }
@@ -273,12 +304,11 @@ public class GameInstance {
         mainGame = this;
         this.score = 0;
         this.level = 0;
+        this.player = new Player("", 0);
         this.question = new Question("ONTARIO");
-        this.players = new ArrayList<>();
+        this.top5Players = new ArrayList<>();
         this.hangMan = new Hangman();
-        
         readScoreFile();
-        getTop5Scores();
     }
 
     public void reset() {
@@ -286,6 +316,12 @@ public class GameInstance {
         this.level = 0;
         // gets random string from file
         question.resetQuestion("HIKIKOMORI");
+        
+    }
+    
+    public void nextLevel() {
+        question.resetQuestion("SUPERIORITY");
+        setDifficulty(difficulty);
     }
 
 }
