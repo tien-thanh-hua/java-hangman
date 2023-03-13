@@ -5,7 +5,6 @@
  */
 package ui;
 
-import com.sun.media.jfxmedia.events.PlayerStateEvent;
 import entities.Player;
 import hangmangame_group3_se1704.GameInstance;
 import java.awt.BorderLayout;
