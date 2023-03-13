@@ -95,6 +95,7 @@ public class GameInstance {
      * Sets the difficulty for the game, which sets the initial state of the Hangman object.<br>
      * If this method is called after the difficulty has been set at least once,
      * then it will only update the difficulty, not resetting it.<br>
+     * This method should only be used <strong>once</strong> per play-through.<br> 
      * Currently supported difficulties include:<br>
      * <ul>
      *  <li>"easy": state = 0</li>

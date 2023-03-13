@@ -7,15 +7,12 @@ package ui;
 
 import hangmangame_group3_se1704.GameInstance;
 import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
 import java.awt.font.TextAttribute;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.AbstractButton;
-import javax.swing.ButtonGroup;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 
 /**
  *
