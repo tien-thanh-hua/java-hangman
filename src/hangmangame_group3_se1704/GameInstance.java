@@ -19,6 +19,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.NoSuchElementException;
 import java.util.Random;
 import java.util.Scanner;
@@ -36,13 +37,10 @@ public class GameInstance {
 
     private Hangman hangMan;
     private Question question;
-
-    ArrayList<Word> words;
-    ArrayList<Word> cities;
-    ArrayList<Word> places;
-    ArrayList<Word> animals;
-    ArrayList<Word> fears;
-
+    
+    HashMap<String, Word> normalWords;
+    HashMap<String, Word> hardWords;
+    
     private ArrayList<Player> top5Players;
     private Player player;
     private char playerChoice;
@@ -53,13 +51,13 @@ public class GameInstance {
         this.score = 0;
         this.level = 0;
         
+        this.normalWords = new HashMap<>();
+        this.hardWords = new HashMap<>();
         this.top5Players = new ArrayList<>();
         this.player = new Player("", 0); // current player data is empty
         
         readScoreFile();
-        initWordList();
-        readWordFile();
-        setRandomQuestion();
+        readAllWordFiles();
     }
 
     public void increaseLevel() {
@@ -147,6 +145,7 @@ public class GameInstance {
                 hangManState = 0;
                 break;
         }
+        setRandomQuestion(difficulty);
         this.hangMan.setState(hangManState);
     }
 
@@ -185,46 +184,6 @@ public class GameInstance {
     public void setPlayer(Player player) {
         this.player = player;
     }
-
-    public ArrayList<Word> getWords() {
-        return words;
-    }
-
-    public void setWords(ArrayList<Word> words) {
-        this.words = words;
-    }
-
-    public ArrayList<Word> getCities() {
-        return cities;
-    }
-
-    public void setCities(ArrayList<Word> cities) {
-        this.cities = cities;
-    }
-
-    public ArrayList<Word> getPlaces() {
-        return places;
-    }
-
-    public void setPlaces(ArrayList<Word> places) {
-        this.places = places;
-    }
-
-    public ArrayList<Word> getAnimals() {
-        return animals;
-    }
-
-    public void setAnimals(ArrayList<Word> animals) {
-        this.animals = animals;
-    }
-
-    public ArrayList<Word> getFears() {
-        return fears;
-    }
-
-    public void setFears(ArrayList<Word> fears) {
-        this.fears = fears;
-    }
     
     public ArrayList<Player> getTop5Players() {
         return top5Players;
@@ -261,48 +220,110 @@ public class GameInstance {
     public boolean containsWord(final ArrayList<Word> list, final String wordStr) {
         return list.stream().map(Word::getWord).filter(wordStr::equals).findFirst().isPresent();
     }
+    
+    public String getTopicFromFileName(String fileName) {
+        int stopIndex = fileName.indexOf('_');
+        return fileName.substring(0, stopIndex);
+    }
+    
+    public void readAllWordFiles() {
+        ArrayList<String> topics = new ArrayList<>();
+        topics.add("animals");
+        topics.add("clothes");
+        topics.add("colors");
+        topics.add("countries");
+        topics.add("fruits");
+        topics.forEach((topic) -> {
+            readWordFile(topic);
+        });
+    }
 
-    public void readWordFile() {
-        ArrayList<Word> tmpWords = new ArrayList<>();
-        ArrayList<Word> tmpCities = new ArrayList<>();
-        ArrayList<Word> tmpPlaces = new ArrayList<>();
-        ArrayList<Word> tmpAnimals = new ArrayList<>();
-        ArrayList<Word> tmpFears = new ArrayList<>();
-
+    public void readWordFile(String topic) {
+        HashMap<String, Word> tmpNormalWords = new HashMap<>();
+        HashMap<String, Word> tmpHardWords = new HashMap<>();
+        
         String wordStr;
         String wordTopic;
         boolean isFileSuccessfullyRead = false;
         while (!isFileSuccessfullyRead) {
             try {
-                File wordsFile = new File("data/words.hwd");
-                Scanner fileSc = new Scanner(wordsFile);
-                while (fileSc.hasNext()) {
-                    wordStr = fileSc.next().trim().toUpperCase();
-                    wordTopic = fileSc.next();
+                File wordDir = new File("data/");
+                // gets all .hwd files EXCEPT words.hwd
+                File[] wordFiles = wordDir.listFiles((d, name) -> (name.endsWith(".hwd") 
+                        && !name.equals("words.hwd")));
+                Scanner fileSc = null;
+                
+                for (File wordFile : wordFiles) {
+                    fileSc = new Scanner(wordFile);
+                    String wordDifficulty = wordFile.getName().contains("normal") ? "normal" : "hard";
+                    while (fileSc.hasNext()) {
+                        wordStr = fileSc.next().trim().toUpperCase();
+                        wordTopic = getTopicFromFileName(wordFile.getName());
 
-                    if (!containsWord(words, wordStr)) { // word not existed yet
-                        tmpWords.add(new Word(wordStr, wordTopic));
-                        switch (wordTopic) {
-                            case "animals":
-                                tmpAnimals.add(new Word(wordStr, wordTopic));
-                                break;
-                            case "cities":
-                                tmpCities.add(new Word(wordStr, wordTopic));
-                                break;
-                            case "places":
-                                tmpPlaces.add(new Word(wordStr, wordTopic));
-                                break;
-                            case "fears":
-                                tmpFears.add(new Word(wordStr, wordTopic));
-                                break;
+                        if (!(tmpNormalWords.containsKey(wordStr) 
+                                && tmpHardWords.containsKey(wordStr))) { // word not existed yet
+                            if (wordDifficulty.equals("normal")) {
+                                tmpNormalWords.put(wordStr, new Word(wordStr, wordTopic));
+                            } else {
+                                tmpHardWords.put(wordStr, new Word(wordStr, wordTopic));
+                            }
+                        } else { // word already exists, log to console
+                            System.out.println("Word \"" + wordStr + "\" in " 
+                                    + wordFile.getName() + " has already existed.");
                         }
                     }
                 }
-                setAnimals(tmpAnimals);
-                setCities(tmpCities);
-                setPlaces(tmpPlaces);
-                setFears(tmpFears);
-                setWords(tmpWords);
+                
+                normalWords.putAll(tmpNormalWords);
+                hardWords.putAll(tmpHardWords);
+                if (fileSc != null) {
+                    fileSc.close();
+                }
+                isFileSuccessfullyRead = true;
+            } catch (FileNotFoundException e) {
+                // creates default score file
+                System.out.println("File not found: " + e.getMessage());
+                System.out.println("Default words.hwd file will be read instead.");
+                readDefaultWordFile();
+            } catch (NoSuchElementException e) {
+                isFileSuccessfullyRead = true; // technically not successful but it prevents infinite loop
+                System.out.println("Something bad happened: " + e.getMessage());
+            }
+        }
+    }
+    
+    public void readDefaultWordFile() {
+        HashMap<String, Word> tmpNormalWords = new HashMap<>();
+        HashMap<String, Word> tmpHardWords = new HashMap<>();
+
+        String wordStr;
+        String wordTopic;
+        String wordDifficulty;
+        boolean isFileSuccessfullyRead = false;
+        while (!isFileSuccessfullyRead) {
+            try {
+                File wordFile = new File("data/words.hwd");
+                Scanner fileSc = new Scanner(wordFile);
+                while (fileSc.hasNext()) {
+                    wordStr = fileSc.next().trim().toUpperCase();
+                    wordTopic = fileSc.next();
+                    wordDifficulty = fileSc.next();
+
+                    if (!(tmpNormalWords.containsKey(wordStr) 
+                                && tmpHardWords.containsKey(wordStr))) { // word not existed yet
+                            if (wordDifficulty.equals("normal")) {
+                                tmpNormalWords.put(wordStr, new Word(wordStr, wordTopic));
+                            } else {
+                                tmpHardWords.put(wordStr, new Word(wordStr, wordTopic));
+                            }
+                        } else { // word already exists, log to console
+                            System.out.println("Word \"" + wordStr + "\" has already existed.");
+                        }
+                }
+                
+                normalWords.putAll(tmpNormalWords);
+                hardWords.putAll(tmpHardWords);
+                
                 fileSc.close();
                 isFileSuccessfullyRead = true;
             } catch (FileNotFoundException e) {
@@ -493,34 +514,50 @@ public class GameInstance {
         // if player score is amongst the top 5 high scores
         // prompts to save the player name and score
     }
-
-    public void initWordList() {
-        this.words = new ArrayList<>();
-        this.animals = new ArrayList<>();
-        this.places = new ArrayList<>();
-        this.cities = new ArrayList<>();
-        this.fears = new ArrayList<>();
-    }
-
+    
     public void reset() {
         this.score = 0;
         this.level = 0;
-        setRandomQuestion();
     }
 
     public void nextLevel() {
-        setRandomQuestion();
         setDifficulty(difficulty);
     }
 
-    public void setRandomQuestion() {
-        // initializing random class
-        Random randomIndexGenerator = new Random();
-        int index = randomIndexGenerator.nextInt(words.size());
-        if (this.question == null) {
-            setQuestion(new Question(words.get(index).getWord(), words.get(index).getTopic()));
+    /**
+     * Generates a random Word from a HashMap&lt;String, Word&gt; based on input
+     * difficulty, then creates/updates the Question.<br>
+     * For example, if the game difficulty is "normal", it will only get questions
+     * from a HashMap containing only words of "normal" difficulty.<br>
+     * This method should only be called after a difficulty has been chosen.
+     * @param difficulty The difficulty of the random question.
+     */
+    public void setRandomQuestion(String difficulty) {
+        Random randomIndexGenerator = new Random(); // initializes random class
+        ArrayList<String> wordList = new ArrayList<>(); // stores keys of HashMaps
+        int index;
+        
+        Word randomWord;
+        String wordStr = "";
+        String wordTopic = "";
+        if (difficulty.equals("easy") || difficulty.equals("normal")) {
+            wordList.addAll(normalWords.keySet()); // stores keys from normalWords
+            index = randomIndexGenerator.nextInt(wordList.size());
+            randomWord = normalWords.get(wordList.get(index));
+            wordStr = randomWord.getWord();
+            wordTopic = randomWord.getTopic();
         } else {
-            this.question.resetQuestion(words.get(index).getWord(), words.get(index).getTopic());
+            wordList.addAll(hardWords.keySet()); // stores keys from normalWords
+            index = randomIndexGenerator.nextInt(wordList.size());
+            randomWord = hardWords.get(wordList.get(index));
+            wordStr = randomWord.getWord();
+            wordTopic = randomWord.getTopic();
+        }
+        
+        if (this.question == null) { // no Question instance yet (when starting game)
+            setQuestion(new Question(wordStr, wordTopic));
+        } else { // after first game
+            this.question.resetQuestion(wordStr, wordTopic);
         }
     }
 }

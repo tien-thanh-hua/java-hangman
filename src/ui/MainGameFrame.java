@@ -90,7 +90,8 @@ public class MainGameFrame extends javax.swing.JFrame {
     }
 
     public void resetLetterButtons() {
-        for (Enumeration<AbstractButton> buttons = btgLetterButtons.getElements(); buttons.hasMoreElements();) {
+        for (Enumeration<AbstractButton> buttons = btgLetterButtons.getElements();
+                buttons.hasMoreElements();) {
             AbstractButton button = buttons.nextElement();
             button.setEnabled(true);
         }
@@ -141,7 +142,11 @@ public class MainGameFrame extends javax.swing.JFrame {
     public void updateLblScore() {
         lblPlayerScore.setText(game.getScore() + "");
     }
-
+    /**
+     * Should be called after disabling letter buttons to prevent last letter
+     * button being disabled after losing and starting new game.
+     * @param c (char) The letter of the button that calls this method.
+     */
     public void btnLetterActionPerformed(char c) {
         game.setPlayerChoice(c);
         if (game.isCorrect()) {
@@ -1338,158 +1343,158 @@ public class MainGameFrame extends javax.swing.JFrame {
 
     private void btnAActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAActionPerformed
         // TODO add your handling code here:
-        btnLetterActionPerformed('A');
         btnA.setEnabled(false);
+        btnLetterActionPerformed('A');
     }//GEN-LAST:event_btnAActionPerformed
 
     private void btnBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBActionPerformed
         // TODO add your handling code here:
-        btnLetterActionPerformed('B');
         btnB.setEnabled(false);
+        btnLetterActionPerformed('B');
     }//GEN-LAST:event_btnBActionPerformed
 
     private void btnCActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCActionPerformed
         // TODO add your handling code here:
-        btnLetterActionPerformed('C');
         btnC.setEnabled(false);
+        btnLetterActionPerformed('C');
     }//GEN-LAST:event_btnCActionPerformed
 
     private void btnDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDActionPerformed
         // TODO add your handling code here:
-        btnLetterActionPerformed('D');
         btnD.setEnabled(false);
+        btnLetterActionPerformed('D');
     }//GEN-LAST:event_btnDActionPerformed
 
     private void btnEActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEActionPerformed
         // TODO add your handling code here:
-        btnLetterActionPerformed('E');
         btnE.setEnabled(false);
+        btnLetterActionPerformed('E');
     }//GEN-LAST:event_btnEActionPerformed
 
     private void btnFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFActionPerformed
         // TODO add your handling code here:
-        btnLetterActionPerformed('F');
         btnF.setEnabled(false);
+        btnLetterActionPerformed('F');
     }//GEN-LAST:event_btnFActionPerformed
 
     private void btnGActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGActionPerformed
         // TODO add your handling code here:
-        btnLetterActionPerformed('G');
         btnG.setEnabled(false);
+        btnLetterActionPerformed('G');
     }//GEN-LAST:event_btnGActionPerformed
 
     private void btnHActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHActionPerformed
         // TODO add your handling code here:
-        btnLetterActionPerformed('H');
         btnH.setEnabled(false);
+        btnLetterActionPerformed('H');
     }//GEN-LAST:event_btnHActionPerformed
 
     private void btnIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIActionPerformed
         // TODO add your handling code here:
-        btnLetterActionPerformed('I');
         btnI.setEnabled(false);
+        btnLetterActionPerformed('I');
     }//GEN-LAST:event_btnIActionPerformed
 
     private void btnJActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnJActionPerformed
         // TODO add your handling code here:
-        btnLetterActionPerformed('J');
         btnJ.setEnabled(false);
+        btnLetterActionPerformed('J');
     }//GEN-LAST:event_btnJActionPerformed
 
     private void btnKActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnKActionPerformed
         // TODO add your handling code here:
-        btnLetterActionPerformed('K');
         btnK.setEnabled(false);
+        btnLetterActionPerformed('K');
     }//GEN-LAST:event_btnKActionPerformed
 
     private void btnLActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLActionPerformed
         // TODO add your handling code here:
-        btnLetterActionPerformed('L');
         btnL.setEnabled(false);
+        btnLetterActionPerformed('L');
     }//GEN-LAST:event_btnLActionPerformed
 
     private void btnMActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMActionPerformed
         // TODO add your handling code here:
-        btnLetterActionPerformed('M');
         btnM.setEnabled(false);
+        btnLetterActionPerformed('M');
     }//GEN-LAST:event_btnMActionPerformed
 
     private void btnNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNActionPerformed
         // TODO add your handling code here:
-        btnLetterActionPerformed('N');
         btnN.setEnabled(false);
+        btnLetterActionPerformed('N');
     }//GEN-LAST:event_btnNActionPerformed
 
     private void btnOActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOActionPerformed
         // TODO add your handling code here:
-        btnLetterActionPerformed('O');
         btnO.setEnabled(false);
+        btnLetterActionPerformed('O');
     }//GEN-LAST:event_btnOActionPerformed
 
     private void btnPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPActionPerformed
         // TODO add your handling code here:
-        btnLetterActionPerformed('P');
         btnP.setEnabled(false);
+        btnLetterActionPerformed('P');
     }//GEN-LAST:event_btnPActionPerformed
 
     private void btnQActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnQActionPerformed
         // TODO add your handling code here:
-        btnLetterActionPerformed('Q');
         btnQ.setEnabled(false);
+        btnLetterActionPerformed('Q');
     }//GEN-LAST:event_btnQActionPerformed
 
     private void btnRActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRActionPerformed
         // TODO add your handling code here:
-        btnLetterActionPerformed('R');
         btnR.setEnabled(false);
+        btnLetterActionPerformed('R');
     }//GEN-LAST:event_btnRActionPerformed
 
     private void btnSActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSActionPerformed
         // TODO add your handling code here:
-        btnLetterActionPerformed('S');
         btnS.setEnabled(false);
+        btnLetterActionPerformed('S');
     }//GEN-LAST:event_btnSActionPerformed
 
     private void btnTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTActionPerformed
         // TODO add your handling code here:
-        btnLetterActionPerformed('T');
         btnT.setEnabled(false);
+        btnLetterActionPerformed('T');
     }//GEN-LAST:event_btnTActionPerformed
 
     private void btnUActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUActionPerformed
         // TODO add your handling code here:
-        btnLetterActionPerformed('U');
         btnU.setEnabled(false);
+        btnLetterActionPerformed('U');
     }//GEN-LAST:event_btnUActionPerformed
 
     private void btnVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVActionPerformed
         // TODO add your handling code here:
-        btnLetterActionPerformed('V');
         btnV.setEnabled(false);
+        btnLetterActionPerformed('V');
     }//GEN-LAST:event_btnVActionPerformed
 
     private void btnWActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnWActionPerformed
         // TODO add your handling code here:
-        btnLetterActionPerformed('W');
         btnW.setEnabled(false);
+        btnLetterActionPerformed('W');
     }//GEN-LAST:event_btnWActionPerformed
 
     private void btnXActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXActionPerformed
         // TODO add your handling code here:
-        btnLetterActionPerformed('X');
         btnX.setEnabled(false);
+        btnLetterActionPerformed('X');
     }//GEN-LAST:event_btnXActionPerformed
 
     private void btnYActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnYActionPerformed
         // TODO add your handling code here:
-        btnLetterActionPerformed('Y');
         btnY.setEnabled(false);
+        btnLetterActionPerformed('Y');
     }//GEN-LAST:event_btnYActionPerformed
 
     private void btnZActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnZActionPerformed
         // TODO add your handling code here:
-        btnLetterActionPerformed('Z');
         btnZ.setEnabled(false);
+        btnLetterActionPerformed('Z');
     }//GEN-LAST:event_btnZActionPerformed
 
     private void btnNewGameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewGameActionPerformed

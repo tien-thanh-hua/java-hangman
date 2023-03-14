@@ -12,7 +12,7 @@ package entities;
 public class Word {
     private String word;
     private String topic;
-
+    
     public Word(String word, String topic) {
         this.word = word;
         this.topic = topic;
