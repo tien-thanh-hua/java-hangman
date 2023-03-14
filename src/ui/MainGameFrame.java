@@ -149,7 +149,20 @@ public class MainGameFrame extends javax.swing.JFrame {
             game.increaseScore();
             updateLblScore();
         } else {
-            this.hCanvas.getHangMan().increaseState();
+            // Since "Asian" difficulty only has 2 lives, the first incorrent
+            // choice will push the Hangman to state = 8 (one more incorrect
+            // choice = game over).
+            
+            // Therefore, the next wrong choice will only +1 state (like it
+            // normally does).
+            if (game.getDifficulty().equals("asian") 
+                    && hCanvas.getHangMan().getState() != 8) {
+                for (int i = 0; i < 5; i++) {
+                    this.hCanvas.getHangMan().increaseState();
+                }
+            } else {
+                this.hCanvas.getHangMan().increaseState();
+            }
             pnlDrawHangman.repaint();
         }
 
@@ -562,7 +575,8 @@ public class MainGameFrame extends javax.swing.JFrame {
         );
 
         dlgChooseDifficulty.setTitle("Choose Your Difficulty");
-        dlgChooseDifficulty.setSize(new java.awt.Dimension(770, 482));
+        dlgChooseDifficulty.setModal(true);
+        dlgChooseDifficulty.setSize(new java.awt.Dimension(782, 482));
 
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, dlgChooseDifficulty, org.jdesktop.beansbinding.ELProperty.create("true"), dlgChooseDifficulty, org.jdesktop.beansbinding.BeanProperty.create("undecorated"));
         bindingGroup.addBinding(binding);
@@ -653,6 +667,7 @@ public class MainGameFrame extends javax.swing.JFrame {
             .addComponent(pnlBackground, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
+        dlgHighScore.setModal(true);
         dlgHighScore.setPreferredSize(new java.awt.Dimension(492, 331));
         dlgHighScore.setSize(new java.awt.Dimension(492, 319));
 
@@ -1498,8 +1513,8 @@ public class MainGameFrame extends javax.swing.JFrame {
         String name = txtNameInput.getText();
         game.savePlayer(name);
         game.updateScoreFile();
-        btnNewGameActionPerformed();
         dlgGameOverTop5.setVisible(false);
+        btnNewGameActionPerformed();
     }//GEN-LAST:event_btnSavePlayerNameActionPerformed
 
     private void btnEasyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEasyActionPerformed
@@ -1524,8 +1539,8 @@ public class MainGameFrame extends javax.swing.JFrame {
 
     private void btnNewGame_dlgGameOverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewGame_dlgGameOverActionPerformed
         // TODO add your handling code here:
-        btnNewGameActionPerformed();
         dlgGameOver.setVisible(false);
+        btnNewGameActionPerformed();
     }//GEN-LAST:event_btnNewGame_dlgGameOverActionPerformed
 
     private void btnHighScoreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHighScoreActionPerformed

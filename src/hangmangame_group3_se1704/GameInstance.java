@@ -15,6 +15,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -440,6 +441,8 @@ public class GameInstance {
             }
             
             fw = new FileWriter("data/score.hsc", true);
+            PrintWriter pw = new PrintWriter("data/score.hsc");
+            pw.close();
             for (Player player : top5Players) {
                 fw.write(player.getName() + " "  + player.getScore() + "\n");
             }
@@ -517,7 +520,7 @@ public class GameInstance {
         if (this.question == null) {
             setQuestion(new Question(words.get(index).getWord(), words.get(index).getTopic()));
         } else {
-            this.question.resetQuestion(words.get(index).getWord());
+            this.question.resetQuestion(words.get(index).getWord(), words.get(index).getTopic());
         }
     }
 }

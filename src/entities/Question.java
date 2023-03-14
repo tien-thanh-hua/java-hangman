@@ -94,8 +94,9 @@ public class Question {
         this.setUserString(String.join("", Collections.nCopies(secretString.length(), "_")));
     }
     
-    public void resetQuestion(String secretString) {
+    public void resetQuestion(String secretString, String topic) {
         this.setSecretString(secretString);
+        this.setTopic(topic);
         this.resetUserString();
         this.charactersCount.clear();
         for (int i = 0; i < getLength(); i++) {
