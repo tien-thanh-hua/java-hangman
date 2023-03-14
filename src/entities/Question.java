@@ -17,10 +17,12 @@ public class Question {
 
     private String secretString = "";
     private String userString = "";
+    private String topic = "";
     private HashMap<Character, ArrayList<Integer>> charactersCount;
 
-    public Question(String secretString) {
+    public Question(String secretString, String topic) {
         this.secretString = secretString;
+        this.topic = topic;
         this.resetUserString();
 
         this.charactersCount = new HashMap<>();
@@ -58,6 +60,14 @@ public class Question {
 
     public void setCharactersCount(HashMap<Character, ArrayList<Integer>> charactersCount) {
         this.charactersCount = charactersCount;
+    }
+
+    public String getTopic() {
+        return topic;
+    }
+
+    public void setTopic(String topic) {
+        this.topic = topic;
     }
 
     public boolean isCompleted() {

@@ -276,7 +276,7 @@ public class GameInstance {
                 File wordsFile = new File("data/words.hwd");
                 Scanner fileSc = new Scanner(wordsFile);
                 while (fileSc.hasNext()) {
-                    wordStr = fileSc.next().toUpperCase();
+                    wordStr = fileSc.next().trim().toUpperCase();
                     wordTopic = fileSc.next();
 
                     if (!containsWord(words, wordStr)) { // word not existed yet
@@ -424,6 +424,33 @@ public class GameInstance {
         }
     }
 
+    public void updateScoreFile() {
+        FileWriter fw = null;
+        try {
+            File scoreFile = new File("data/score.hsc");
+            // prints debug info to check for score.hsc's existence
+            if (scoreFile.isFile()) { // score.hsc exists and is not a directory
+                System.out.println("File score.hsc already exists.");
+            } else {
+                if (scoreFile.createNewFile()) {
+                    System.out.println("Empty file score.hsc successfully created.");
+                } else {
+                    System.out.println("Failed to create score.hsc.");
+                }
+            }
+            
+            fw = new FileWriter("data/score.hsc", true);
+            for (Player player : top5Players) {
+                fw.write(player.getName() + " "  + player.getScore() + "\n");
+            }
+            fw.flush();
+            fw.close();
+            System.out.println("New high scores saved to score.hsc");
+        } catch (IOException e) {
+            System.err.println("Cannot write data to \"score.hsc\": " + e.getMessage());
+        }
+    }
+    
     public void setTop5Players(ArrayList<Player> top5Players) {
         this.top5Players = top5Players;
     }
@@ -488,7 +515,7 @@ public class GameInstance {
         Random randomIndexGenerator = new Random();
         int index = randomIndexGenerator.nextInt(words.size());
         if (this.question == null) {
-            setQuestion(new Question(words.get(index).getWord()));
+            setQuestion(new Question(words.get(index).getWord(), words.get(index).getTopic()));
         } else {
             this.question.resetQuestion(words.get(index).getWord());
         }

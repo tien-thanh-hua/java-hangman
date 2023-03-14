@@ -362,7 +362,7 @@
     </Container>
     <Container class="javax.swing.JDialog" name="dlgChooseDifficulty">
       <Properties>
-        <Property name="alwaysOnTop" type="boolean" value="true"/>
+        <Property name="title" type="java.lang.String" value="Choose Your Difficulty"/>
         <Property name="size" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
           <Dimension value="[770, 482]"/>
         </Property>
@@ -628,6 +628,7 @@
   </NonVisualComponents>
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="3"/>
+    <Property name="title" type="java.lang.String" value="Hangman Legacy v1.0.0"/>
     <Property name="resizable" type="boolean" value="false"/>
   </Properties>
   <SyntheticProperties>
@@ -1496,6 +1497,7 @@
             </Property>
             <Property name="horizontalAlignment" type="int" value="0"/>
             <Property name="text" type="java.lang.String" value="TEXT____SECRET"/>
+            <Property name="horizontalTextPosition" type="int" value="0"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="btnHighScore">

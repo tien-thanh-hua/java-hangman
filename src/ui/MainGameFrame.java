@@ -9,6 +9,7 @@ import entities.Player;
 import hangmangame_group3_se1704.GameInstance;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Toolkit;
 import java.awt.font.TextAttribute;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -33,12 +34,13 @@ public class MainGameFrame extends javax.swing.JFrame {
     public void setDifficulty(String difficulty) {
         game.setDifficulty(difficulty);
         game.setDifficultyFactor(difficulty);
-        updateTxtDifficulty();
+        updateLblDifficulty();
     }
 
     public void initFrame() {
         showChooseDifficultyDialog();
 
+        this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/images/hangman_128.png")));
         pnlDrawHangman.setLayout(null);
         pnlDrawHangman.removeAll();
         pnlDrawHangman.revalidate();
@@ -48,14 +50,15 @@ public class MainGameFrame extends javax.swing.JFrame {
         pnlDrawHangman.setLayout(new BorderLayout());
         pnlDrawHangman.add(hCanvas, BorderLayout.CENTER);
 
+        updateLblTopic();
+        
         // init Word Display panel
         initTxtSecretWord();
-        updateLevelText();
+        updateLblLevel();
         btnNextLevel.setEnabled(false);
     }
 
     public void resetFrame() {
-
         pnlDrawHangman.revalidate();
         pnlDrawHangman.repaint();
 
@@ -65,12 +68,13 @@ public class MainGameFrame extends javax.swing.JFrame {
         resetLetterButtons();
 
         // reset Player Information panel
-        updateTxtDifficulty();
-        updateScoreText();
+        updateLblTopic();
+        updateLblDifficulty();
+        updateLblScore();
 
         // init Word Display panel
         initTxtSecretWord();
-        updateLevelText();
+        updateLblLevel();
     }
 
     public void showChooseDifficultyDialog() {
@@ -92,7 +96,15 @@ public class MainGameFrame extends javax.swing.JFrame {
         }
     }
 
-    public void updateTxtDifficulty() {
+    public void initTxtSecretWord() {
+        Map<TextAttribute, Object> attributes = new HashMap<>();
+        attributes.put(TextAttribute.TRACKING, 0.35); // sets character spacing
+        txtSecretWord.setFont(txtSecretWord.getFont().deriveFont(attributes));
+        txtSecretWord.setForeground(Color.black);
+        txtSecretWord.setText(game.getQuestion().getUserString());
+    }
+    
+    public void updateLblDifficulty() {
         String properDifficulty = "";
         if (!game.getDifficulty().isEmpty()) {
             properDifficulty = Character.toUpperCase(game.getDifficulty().charAt(0))
@@ -100,21 +112,22 @@ public class MainGameFrame extends javax.swing.JFrame {
         }
         lblDifficulty.setText(properDifficulty);
     }
-
-    public void initTxtSecretWord() {
-        Map<TextAttribute, Object> attributes = new HashMap<>();
-        attributes.put(TextAttribute.TRACKING, 0.5); // sets character spacing
-        txtSecretWord.setFont(txtSecretWord.getFont().deriveFont(attributes));
-        txtSecretWord.setForeground(Color.black);
-        txtSecretWord.setText(game.getQuestion().getUserString());
+    
+    public void updateLblTopic() {
+        String properTopic = "";
+        if (!(game.getQuestion() == null)) {
+            properTopic = Character.toUpperCase(game.getQuestion().getTopic().charAt(0))
+                    + game.getQuestion().getTopic().substring(1);
+        }
+        lblTopic.setText(properTopic);
     }
-
-    public void updateLevelText() {
+    
+    public void updateLblLevel() {
         game.increaseLevel();
         lblLevel.setText(game.getLevel() + "");
     }
 
-    public void updateSecretText() {
+    public void updateLblSecret() {
         game.updateUserString();
         if (game.isLevelCompleted()) { // if the level is completed, text turns green
             txtSecretWord.setForeground(new Color(0, 122, 0));
@@ -125,27 +138,16 @@ public class MainGameFrame extends javax.swing.JFrame {
         }
     }
 
-    public void updateScoreText() {
+    public void updateLblScore() {
         lblPlayerScore.setText(game.getScore() + "");
-    }
-
-    public void newScoreDialog() {
-        disableLetterButtons();
-        String playerName;
-        playerName = JOptionPane.showInputDialog(this,
-                "You suck! But at least you got a high score...",
-                "You lost!", JOptionPane.PLAIN_MESSAGE);
-        // if playerName already exists
-        // add score to existing player instead
-
     }
 
     public void btnLetterActionPerformed(char c) {
         game.setPlayerChoice(c);
         if (game.isCorrect()) {
-            updateSecretText();
+            updateLblSecret();
             game.increaseScore();
-            updateScoreText();
+            updateLblScore();
         } else {
             this.hCanvas.getHangMan().increaseState();
             pnlDrawHangman.repaint();
@@ -559,7 +561,7 @@ public class MainGameFrame extends javax.swing.JFrame {
             .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
-        dlgChooseDifficulty.setAlwaysOnTop(true);
+        dlgChooseDifficulty.setTitle("Choose Your Difficulty");
         dlgChooseDifficulty.setSize(new java.awt.Dimension(770, 482));
 
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, dlgChooseDifficulty, org.jdesktop.beansbinding.ELProperty.create("true"), dlgChooseDifficulty, org.jdesktop.beansbinding.BeanProperty.create("undecorated"));
@@ -731,6 +733,7 @@ public class MainGameFrame extends javax.swing.JFrame {
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Hangman Legacy v1.0.0");
         setResizable(false);
 
         pnlPlayArea.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Word Display", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Dialog", 1, 14))); // NOI18N
@@ -1075,6 +1078,7 @@ public class MainGameFrame extends javax.swing.JFrame {
         txtSecretWord.setFont(new java.awt.Font("Consolas", 1, 36)); // NOI18N
         txtSecretWord.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         txtSecretWord.setText("TEXT____SECRET");
+        txtSecretWord.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 
         btnHighScore.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
         btnHighScore.setText("High Scores");
@@ -1493,6 +1497,7 @@ public class MainGameFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
         String name = txtNameInput.getText();
         game.savePlayer(name);
+        game.updateScoreFile();
         btnNewGameActionPerformed();
         dlgGameOverTop5.setVisible(false);
     }//GEN-LAST:event_btnSavePlayerNameActionPerformed
