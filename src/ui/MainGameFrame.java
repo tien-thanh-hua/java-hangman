@@ -16,12 +16,17 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.swing.AbstractButton;
 import javax.swing.JOptionPane;
+import javax.swing.JTextPane;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
 
 /**
  *
  * @author ibuyc
  */
 public class MainGameFrame extends javax.swing.JFrame {
+
     private HangmanCanvas hCanvas = null;
     private GameInstance game = null;
 
@@ -33,7 +38,7 @@ public class MainGameFrame extends javax.swing.JFrame {
 
     public void initFrame() {
         showChooseDifficultyDialog();
-        
+
         pnlDrawHangman.setLayout(null);
         pnlDrawHangman.removeAll();
         pnlDrawHangman.revalidate();
@@ -48,38 +53,38 @@ public class MainGameFrame extends javax.swing.JFrame {
         updateLevelText();
         btnNextLevel.setEnabled(false);
     }
-    
+
     public void resetFrame() {
-        
+
         pnlDrawHangman.revalidate();
         pnlDrawHangman.repaint();
-        
+
         // reset buttons
         btnNewGame.setEnabled(true);
         btnNextLevel.setEnabled(false);
         resetLetterButtons();
-        
+
         // reset Player Information panel
         updateTxtDifficulty();
         updateScoreText();
-        
+
         // init Word Display panel
         initTxtSecretWord();
         updateLevelText();
     }
-    
+
     public void showChooseDifficultyDialog() {
         dlgChooseDifficulty.setLocationRelativeTo(null);
         dlgChooseDifficulty.setVisible(true);
     }
-    
+
     public void disableLetterButtons() {
         for (Enumeration<AbstractButton> buttons = btgLetterButtons.getElements(); buttons.hasMoreElements();) {
             AbstractButton button = buttons.nextElement();
             button.setEnabled(false);
         }
     }
-    
+
     public void resetLetterButtons() {
         for (Enumeration<AbstractButton> buttons = btgLetterButtons.getElements(); buttons.hasMoreElements();) {
             AbstractButton button = buttons.nextElement();
@@ -103,7 +108,7 @@ public class MainGameFrame extends javax.swing.JFrame {
         txtSecretWord.setForeground(Color.black);
         txtSecretWord.setText(game.getQuestion().getUserString());
     }
-    
+
     public void updateLevelText() {
         game.increaseLevel();
         lblLevel.setText(game.getLevel() + "");
@@ -145,7 +150,7 @@ public class MainGameFrame extends javax.swing.JFrame {
             this.hCanvas.getHangMan().increaseState();
             pnlDrawHangman.repaint();
         }
-        
+
         if (game.isLevelCompleted()) {
             // proceeds to next level
             levelComplete();
@@ -155,26 +160,33 @@ public class MainGameFrame extends javax.swing.JFrame {
             game.gameOver();
         }
     }
-    
+
     public void btnNewGameActionPerformed() {
         btnNewGame.setEnabled(false);
         showChooseDifficultyDialog();
         game.reset();
         resetFrame();
     }
-    
+
     public void btnDifficultyActionPerformed(String difficulty) {
         setDifficulty(difficulty);
         dlgChooseDifficulty.setVisible(false);
         this.setVisible(true);
         pnlDrawHangman.repaint();
     }
-    
+
     public void levelComplete() {
         btnNextLevel.setEnabled(true);
         disableLetterButtons();
     }
-    
+
+    public void setAlignmentRight(JTextPane txtPane) {
+        StyledDocument doc = txtPane.getStyledDocument();
+        SimpleAttributeSet center = new SimpleAttributeSet();
+        StyleConstants.setAlignment(center, StyleConstants.ALIGN_RIGHT);
+        doc.setParagraphAttributes(0, doc.getLength(), center, false);
+    }
+
     public void showGameOver() {
         disableLetterButtons();
         ArrayList<Player> top5Players = game.getTop5Players();
@@ -187,22 +199,25 @@ public class MainGameFrame extends javax.swing.JFrame {
                 break;
             }
         }
-        
-        if (isInTop5) {
+
+        if (isInTop5) { // opens top 5 game over dialog
             String top5Names = "", top5Scores = "";
             for (int i = 1; i <= top5Players.size(); i++) {
-                top5Names += i + ". " + top5Players.get(i-1).getName() + "\n";
-                top5Scores += top5Players.get(i-1).getScore() + "\n";
+                top5Names += i + ". " + top5Players.get(i - 1).getName() + "\n";
+                top5Scores += top5Players.get(i - 1).getScore() + "\n";
             }
             top5Names = top5Names.substring(0, top5Names.length() - 1);
             top5Scores = top5Scores.substring(0, top5Scores.length() - 1);
-            
+
             lblYourScore_dlgGameOverTop5.setText("Your Score: " + yourScore);
-            txtPlayerNames.setText(top5Names);
-            txtPlayerScores.setText(top5Scores);
+            txtPlayerNames_dlgGameOverTop5.setText(top5Names);
+
+            setAlignmentRight(txtPlayerScores_dlgGameOverTop5);
+            txtPlayerScores_dlgGameOverTop5.setText(top5Scores);
+
             dlgGameOverTop5.setLocationRelativeTo(null);
             dlgGameOverTop5.setVisible(true);
-        } else {
+        } else { // opens normal game over dialog
             Player bestPlayer = game.getTop5Players().get(0);
             int highScore = bestPlayer.getScore();
             lblHighScore.setText("High Score: " + highScore);
@@ -210,6 +225,29 @@ public class MainGameFrame extends javax.swing.JFrame {
             dlgGameOver.setLocationRelativeTo(null);
             dlgGameOver.setVisible(true);
         }
+    }
+
+    public void showHighScore() {
+        String top5Names = "", top5Scores = "";
+        ArrayList<Player> top5Players = game.getTop5Players();
+        for (int i = 1; i <= top5Players.size(); i++) {
+            top5Names += i + ". " + top5Players.get(i - 1).getName() + "\n";
+            top5Scores += top5Players.get(i - 1).getScore() + "\n";
+        }
+        top5Names = top5Names.substring(0, top5Names.length() - 1);
+        top5Scores = top5Scores.substring(0, top5Scores.length() - 1);
+
+        txtPlayerNames_dlgHighScore.setText(top5Names);
+
+        setAlignmentRight(txtPlayerScores_dlgHighScore);
+        txtPlayerScores_dlgHighScore.setText(top5Scores);
+
+        dlgHighScore.setLocationRelativeTo(null);
+        dlgHighScore.setVisible(true);
+    }
+
+    public void printTop5(JTextPane txtPane) {
+
     }
 
     /**
@@ -245,10 +283,10 @@ public class MainGameFrame extends javax.swing.JFrame {
         lblYourScore_dlgGameOverTop5 = new javax.swing.JLabel();
         lblSubtitle = new javax.swing.JLabel();
         lblTop5 = new javax.swing.JLabel();
-        txtPlayerNames = new javax.swing.JTextArea();
-        txtPlayerScores = new javax.swing.JTextArea();
         btnSavePlayerName = new javax.swing.JButton();
         txtNameInput = new javax.swing.JTextField();
+        txtPlayerScores_dlgGameOverTop5 = new javax.swing.JTextPane();
+        txtPlayerNames_dlgGameOverTop5 = new javax.swing.JTextPane();
         dlgChooseDifficulty = new javax.swing.JDialog();
         pnlBackground = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
@@ -256,6 +294,12 @@ public class MainGameFrame extends javax.swing.JFrame {
         btnNormal = new javax.swing.JButton();
         btnHard = new javax.swing.JButton();
         btnAsian = new javax.swing.JButton();
+        dlgHighScore = new javax.swing.JDialog();
+        jPanel1 = new javax.swing.JPanel();
+        lblTop6 = new javax.swing.JLabel();
+        txtPlayerNames_dlgHighScore = new javax.swing.JTextPane();
+        txtPlayerScores_dlgHighScore = new javax.swing.JTextPane();
+        btnClose_dlgHighScore = new javax.swing.JButton();
         pnlPlayArea = new javax.swing.JPanel();
         btnA = new javax.swing.JButton();
         btnB = new javax.swing.JButton();
@@ -335,7 +379,10 @@ public class MainGameFrame extends javax.swing.JFrame {
         btnNewGame_dlgGameOver.setForeground(new java.awt.Color(102, 0, 0));
         btnNewGame_dlgGameOver.setText("New Game");
         btnNewGame_dlgGameOver.setContentAreaFilled(false);
+        btnNewGame_dlgGameOver.setFocusPainted(false);
+        btnNewGame_dlgGameOver.setFocusable(false);
         btnNewGame_dlgGameOver.setRequestFocusEnabled(false);
+        btnNewGame_dlgGameOver.setVerifyInputWhenFocusTarget(false);
         btnNewGame_dlgGameOver.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnNewGame_dlgGameOverActionPerformed(evt);
@@ -388,7 +435,7 @@ public class MainGameFrame extends javax.swing.JFrame {
         dlgGameOverTop5.setBackground(new java.awt.Color(0, 102, 102));
         dlgGameOverTop5.setModal(true);
         dlgGameOverTop5.setResizable(false);
-        dlgGameOverTop5.setSize(new java.awt.Dimension(673, 468));
+        dlgGameOverTop5.setSize(new java.awt.Dimension(690, 434));
         dlgGameOverTop5.setType(java.awt.Window.Type.POPUP);
         dlgGameOverTop5.setUndecorated(true);
 
@@ -418,34 +465,13 @@ public class MainGameFrame extends javax.swing.JFrame {
         lblTop5.setText("Top 5 Scores");
         lblTop5.setVerticalAlignment(javax.swing.SwingConstants.TOP);
 
-        txtPlayerNames.setEditable(false);
-        txtPlayerNames.setBackground(new java.awt.Color(244, 235, 217));
-        txtPlayerNames.setColumns(5);
-        txtPlayerNames.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        txtPlayerNames.setRows(5);
-        txtPlayerNames.setText("1. Player1\n2. Player4\n3. Player2\n4. Player3\n5. Player5");
-        txtPlayerNames.setAutoscrolls(false);
-        txtPlayerNames.setBorder(null);
-        txtPlayerNames.setFocusable(false);
-        txtPlayerNames.setRequestFocusEnabled(false);
-
-        txtPlayerScores.setEditable(false);
-        txtPlayerScores.setBackground(new java.awt.Color(244, 235, 217));
-        txtPlayerScores.setColumns(2);
-        txtPlayerScores.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        txtPlayerScores.setRows(5);
-        txtPlayerScores.setText("9001\n5600\n5000\n4000\n2300");
-        txtPlayerScores.setAutoscrolls(false);
-        txtPlayerScores.setBorder(null);
-        txtPlayerScores.setFocusable(false);
-        txtPlayerScores.setRequestFocusEnabled(false);
-
         btnSavePlayerName.setBackground(new java.awt.Color(0, 153, 153));
         btnSavePlayerName.setFont(new java.awt.Font("Dialog", 0, 24)); // NOI18N
         btnSavePlayerName.setForeground(new java.awt.Color(102, 0, 0));
         btnSavePlayerName.setText("Save");
         btnSavePlayerName.setContentAreaFilled(false);
-        btnSavePlayerName.setOpaque(false);
+        btnSavePlayerName.setFocusPainted(false);
+        btnSavePlayerName.setFocusable(false);
         btnSavePlayerName.setRequestFocusEnabled(false);
         btnSavePlayerName.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -456,6 +482,22 @@ public class MainGameFrame extends javax.swing.JFrame {
         txtNameInput.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         txtNameInput.setText("Player0");
 
+        txtPlayerScores_dlgGameOverTop5.setEditable(false);
+        txtPlayerScores_dlgGameOverTop5.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        txtPlayerScores_dlgGameOverTop5.setFocusCycleRoot(false);
+        txtPlayerScores_dlgGameOverTop5.setFocusable(false);
+        txtPlayerScores_dlgGameOverTop5.setOpaque(false);
+        txtPlayerScores_dlgGameOverTop5.setRequestFocusEnabled(false);
+        txtPlayerScores_dlgGameOverTop5.setVerifyInputWhenFocusTarget(false);
+
+        txtPlayerNames_dlgGameOverTop5.setEditable(false);
+        txtPlayerNames_dlgGameOverTop5.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        txtPlayerNames_dlgGameOverTop5.setFocusCycleRoot(false);
+        txtPlayerNames_dlgGameOverTop5.setFocusable(false);
+        txtPlayerNames_dlgGameOverTop5.setOpaque(false);
+        txtPlayerNames_dlgGameOverTop5.setRequestFocusEnabled(false);
+        txtPlayerNames_dlgGameOverTop5.setVerifyInputWhenFocusTarget(false);
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -464,23 +506,25 @@ public class MainGameFrame extends javax.swing.JFrame {
                 .addGap(36, 36, 36)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(lblTop5, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addComponent(txtPlayerNames_dlgGameOverTop5)
+                                .addGap(18, 18, 18)
+                                .addComponent(txtPlayerScores_dlgGameOverTop5, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel4Layout.createSequentialGroup()
-                                .addComponent(txtPlayerNames)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(txtPlayerScores, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(lblTop5, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtNameInput)
-                            .addComponent(lblYourScore_dlgGameOverTop5, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)))
+                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(lblYourScore_dlgGameOverTop5, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
+                                    .addComponent(txtNameInput)))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btnSavePlayerName, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(57, 57, 57))))
                     .addComponent(lblGameOver_dlgGameOverTop5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(lblSubtitle, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(19, 19, 19))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnSavePlayerName, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(75, 75, 75))
+                .addContainerGap(36, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -494,13 +538,14 @@ public class MainGameFrame extends javax.swing.JFrame {
                     .addComponent(lblTop5)
                     .addComponent(lblYourScore_dlgGameOverTop5))
                 .addGap(18, 18, 18)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtPlayerScores, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtPlayerNames, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtNameInput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnSavePlayerName)
-                .addContainerGap(24, Short.MAX_VALUE))
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(txtNameInput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(40, 40, 40)
+                        .addComponent(btnSavePlayerName))
+                    .addComponent(txtPlayerScores_dlgGameOverTop5, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtPlayerNames_dlgGameOverTop5, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(36, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout dlgGameOverTop5Layout = new javax.swing.GroupLayout(dlgGameOverTop5.getContentPane());
@@ -604,6 +649,85 @@ public class MainGameFrame extends javax.swing.JFrame {
         dlgChooseDifficultyLayout.setVerticalGroup(
             dlgChooseDifficultyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(pnlBackground, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+
+        dlgHighScore.setPreferredSize(new java.awt.Dimension(492, 331));
+        dlgHighScore.setSize(new java.awt.Dimension(492, 319));
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, dlgHighScore, org.jdesktop.beansbinding.ELProperty.create("true"), dlgHighScore, org.jdesktop.beansbinding.BeanProperty.create("undecorated"));
+        bindingGroup.addBinding(binding);
+
+        jPanel1.setBackground(new java.awt.Color(239, 247, 226));
+
+        lblTop6.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
+        lblTop6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblTop6.setText("High Scores");
+        lblTop6.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+
+        txtPlayerNames_dlgHighScore.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        txtPlayerNames_dlgHighScore.setFocusable(false);
+        txtPlayerNames_dlgHighScore.setOpaque(false);
+        txtPlayerNames_dlgHighScore.setVerifyInputWhenFocusTarget(false);
+
+        txtPlayerScores_dlgHighScore.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        txtPlayerScores_dlgHighScore.setFocusable(false);
+        txtPlayerScores_dlgHighScore.setOpaque(false);
+        txtPlayerScores_dlgHighScore.setVerifyInputWhenFocusTarget(false);
+
+        btnClose_dlgHighScore.setBackground(new java.awt.Color(0, 153, 153));
+        btnClose_dlgHighScore.setFont(new java.awt.Font("Dialog", 0, 24)); // NOI18N
+        btnClose_dlgHighScore.setForeground(new java.awt.Color(0, 102, 102));
+        btnClose_dlgHighScore.setText("Close");
+        btnClose_dlgHighScore.setContentAreaFilled(false);
+        btnClose_dlgHighScore.setFocusPainted(false);
+        btnClose_dlgHighScore.setRequestFocusEnabled(false);
+        btnClose_dlgHighScore.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnClose_dlgHighScoreActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addGap(36, 36, 36)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(lblTop6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(0, 120, Short.MAX_VALUE)
+                                .addComponent(btnClose_dlgHighScore, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(txtPlayerNames_dlgHighScore))
+                        .addGap(18, 18, 18)
+                        .addComponent(txtPlayerScores_dlgHighScore, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(36, 36, 36))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(lblTop6)
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtPlayerNames_dlgHighScore, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtPlayerScores_dlgHighScore, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(btnClose_dlgHighScore)
+                .addContainerGap(24, Short.MAX_VALUE))
+        );
+
+        javax.swing.GroupLayout dlgHighScoreLayout = new javax.swing.GroupLayout(dlgHighScore.getContentPane());
+        dlgHighScore.getContentPane().setLayout(dlgHighScoreLayout);
+        dlgHighScoreLayout.setHorizontalGroup(
+            dlgHighScoreLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        dlgHighScoreLayout.setVerticalGroup(
+            dlgHighScoreLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -1351,7 +1475,11 @@ public class MainGameFrame extends javax.swing.JFrame {
 
     private void btnNewGameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewGameActionPerformed
         // TODO add your handling code here:
-        btnNewGameActionPerformed();
+        if (JOptionPane.showConfirmDialog(this, "Do you want to start a new game?",
+                "New Game?", JOptionPane.YES_NO_OPTION)
+                == JOptionPane.YES_OPTION) {
+            btnNewGameActionPerformed();
+        }
     }//GEN-LAST:event_btnNewGameActionPerformed
 
     private void btnNextLevelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNextLevelActionPerformed
@@ -1391,14 +1519,19 @@ public class MainGameFrame extends javax.swing.JFrame {
 
     private void btnNewGame_dlgGameOverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewGame_dlgGameOverActionPerformed
         // TODO add your handling code here:
-        
         btnNewGameActionPerformed();
         dlgGameOver.setVisible(false);
     }//GEN-LAST:event_btnNewGame_dlgGameOverActionPerformed
 
     private void btnHighScoreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHighScoreActionPerformed
         // TODO add your handling code here:
+        showHighScore();
     }//GEN-LAST:event_btnHighScoreActionPerformed
+
+    private void btnClose_dlgHighScoreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClose_dlgHighScoreActionPerformed
+        // TODO add your handling code here:
+        dlgHighScore.setVisible(false);
+    }//GEN-LAST:event_btnClose_dlgHighScoreActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1442,6 +1575,7 @@ public class MainGameFrame extends javax.swing.JFrame {
     private javax.swing.JButton btnAsian;
     private javax.swing.JButton btnB;
     private javax.swing.JButton btnC;
+    private javax.swing.JButton btnClose_dlgHighScore;
     private javax.swing.JButton btnD;
     private javax.swing.JButton btnE;
     private javax.swing.JButton btnEasy;
@@ -1476,9 +1610,11 @@ public class MainGameFrame extends javax.swing.JFrame {
     private javax.swing.JDialog dlgChooseDifficulty;
     private javax.swing.JDialog dlgGameOver;
     private javax.swing.JDialog dlgGameOverTop5;
+    private javax.swing.JDialog dlgHighScore;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JLabel lblDifficulty;
@@ -1490,6 +1626,7 @@ public class MainGameFrame extends javax.swing.JFrame {
     private javax.swing.JLabel lblPlayerScore;
     private javax.swing.JLabel lblSubtitle;
     private javax.swing.JLabel lblTop5;
+    private javax.swing.JLabel lblTop6;
     private javax.swing.JLabel lblTopic;
     private javax.swing.JLabel lblTopicTxt;
     private javax.swing.JLabel lblYourScore_dlgGameOver;
@@ -1499,8 +1636,10 @@ public class MainGameFrame extends javax.swing.JFrame {
     private javax.swing.JPanel pnlPlayArea;
     private javax.swing.JPanel pnlPlayerInfo;
     private javax.swing.JTextField txtNameInput;
-    private javax.swing.JTextArea txtPlayerNames;
-    private javax.swing.JTextArea txtPlayerScores;
+    private javax.swing.JTextPane txtPlayerNames_dlgGameOverTop5;
+    private javax.swing.JTextPane txtPlayerNames_dlgHighScore;
+    private javax.swing.JTextPane txtPlayerScores_dlgGameOverTop5;
+    private javax.swing.JTextPane txtPlayerScores_dlgHighScore;
     private javax.swing.JLabel txtSecretWord;
     private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
