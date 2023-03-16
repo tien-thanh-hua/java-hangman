@@ -9,13 +9,18 @@ import entities.Player;
 import hangmangame_group3_se1704.GameInstance;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Toolkit;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.awt.font.TextAttribute;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.AbstractButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextPane;
 import javax.swing.text.SimpleAttributeSet;
@@ -24,12 +29,14 @@ import javax.swing.text.StyledDocument;
 
 /**
  *
- * @author ibuyc
+ * @author CE171454 Hua Tien Thanh
  */
-public class MainGameFrame extends javax.swing.JFrame {
+public class MainGameFrame extends javax.swing.JFrame
+        implements WindowListener{
 
     private HangmanCanvas hCanvas = null;
     private GameInstance game = null;
+    private final Font OPTION_PANE_FONT = new Font("Segoe UI", Font.BOLD, 24);
 
     public void setDifficulty(String difficulty) {
         game.setDifficulty(difficulty);
@@ -56,6 +63,7 @@ public class MainGameFrame extends javax.swing.JFrame {
         initTxtSecretWord();
         updateLblLevel();
         btnNextLevel.setEnabled(false);
+        btnNextLevel.setContentAreaFilled(false);
     }
 
     public void resetFrame() {
@@ -65,6 +73,7 @@ public class MainGameFrame extends javax.swing.JFrame {
         // reset buttons
         btnNewGame.setEnabled(true);
         btnNextLevel.setEnabled(false);
+        btnNextLevel.setContentAreaFilled(false);
         resetLetterButtons();
 
         // reset Player Information panel
@@ -117,8 +126,12 @@ public class MainGameFrame extends javax.swing.JFrame {
     public void updateLblTopic() {
         String properTopic = "";
         if (!(game.getQuestion() == null)) {
-            properTopic = Character.toUpperCase(game.getQuestion().getTopic().charAt(0))
-                    + game.getQuestion().getTopic().substring(1);
+            if (game.getDifficulty().equals("asian")) {
+                properTopic = "???";
+            } else {
+                properTopic = Character.toUpperCase(game.getQuestion().getTopic().charAt(0))
+                        + game.getQuestion().getTopic().substring(1);
+            }
         }
         lblTopic.setText(properTopic);
     }
@@ -190,12 +203,13 @@ public class MainGameFrame extends javax.swing.JFrame {
 
     public void btnDifficultyActionPerformed(String difficulty) {
         setDifficulty(difficulty);
+        pnlDrawHangman.repaint();
         dlgChooseDifficulty.setVisible(false);
         this.setVisible(true);
-        pnlDrawHangman.repaint();
     }
 
     public void levelComplete() {
+        btnNextLevel.setContentAreaFilled(true);
         btnNextLevel.setEnabled(true);
         disableLetterButtons();
     }
@@ -270,12 +284,28 @@ public class MainGameFrame extends javax.swing.JFrame {
 
     }
 
+    @Override
+    public void windowClosing(WindowEvent e) {
+        JLabel question = new JLabel("Do you want to return to main menu?");
+        question.setFont(OPTION_PANE_FONT);
+        int result = JOptionPane.showConfirmDialog(this, question, 
+                "Return to Main Menu?",
+            JOptionPane.YES_NO_OPTION);
+        if (result == JOptionPane.YES_OPTION) {
+            MainMenu menu = new MainMenu();
+            menu.setVisible(true);
+            menu.setLocationRelativeTo(null);
+            this.dispose();
+        }
+    }
+    
     /**
      * Creates new form HangmanGame
      */
     public MainGameFrame() {
         initComponents();
         this.setLocationRelativeTo(null); // put this into the center of screen
+        addWindowListener(this);
         game = new GameInstance();
         initFrame();
     }
@@ -347,12 +377,9 @@ public class MainGameFrame extends javax.swing.JFrame {
         btnT = new javax.swing.JButton();
         btnY = new javax.swing.JButton();
         btnZ = new javax.swing.JButton();
-        btnNextLevel = new javax.swing.JButton();
-        btnNewGame = new javax.swing.JButton();
         lblLevelTxt = new javax.swing.JLabel();
         lblLevel = new javax.swing.JLabel();
         txtSecretWord = new javax.swing.JLabel();
-        btnHighScore = new javax.swing.JButton();
         pnlPlayerInfo = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         lblDifficulty = new javax.swing.JLabel();
@@ -361,6 +388,11 @@ public class MainGameFrame extends javax.swing.JFrame {
         lblTopicTxt = new javax.swing.JLabel();
         lblTopic = new javax.swing.JLabel();
         pnlDrawHangman = new javax.swing.JPanel();
+        jPanel2 = new javax.swing.JPanel();
+        btnNextLevel = new javax.swing.JButton();
+        btnHighScore = new javax.swing.JButton();
+        btnNewGame = new javax.swing.JButton();
+        btnMainMenu = new javax.swing.JButton();
 
         dlgGameOver.setAlwaysOnTop(true);
         dlgGameOver.setBackground(new java.awt.Color(0, 102, 102));
@@ -595,6 +627,7 @@ public class MainGameFrame extends javax.swing.JFrame {
         jLabel4.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jLabel4.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 
+        btnEasy.setBackground(new java.awt.Color(204, 255, 204));
         btnEasy.setFont(new java.awt.Font("Dialog", 0, 24)); // NOI18N
         btnEasy.setText("Easy");
         btnEasy.addActionListener(new java.awt.event.ActionListener() {
@@ -603,6 +636,7 @@ public class MainGameFrame extends javax.swing.JFrame {
             }
         });
 
+        btnNormal.setBackground(new java.awt.Color(255, 255, 204));
         btnNormal.setFont(new java.awt.Font("Dialog", 0, 24)); // NOI18N
         btnNormal.setText("Normal");
         btnNormal.addActionListener(new java.awt.event.ActionListener() {
@@ -611,6 +645,7 @@ public class MainGameFrame extends javax.swing.JFrame {
             }
         });
 
+        btnHard.setBackground(new java.awt.Color(255, 204, 204));
         btnHard.setFont(new java.awt.Font("Dialog", 0, 24)); // NOI18N
         btnHard.setText("Hard");
         btnHard.addActionListener(new java.awt.event.ActionListener() {
@@ -619,7 +654,9 @@ public class MainGameFrame extends javax.swing.JFrame {
             }
         });
 
-        btnAsian.setFont(new java.awt.Font("Dialog", 0, 24)); // NOI18N
+        btnAsian.setBackground(new java.awt.Color(102, 0, 0));
+        btnAsian.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
+        btnAsian.setForeground(new java.awt.Color(255, 255, 255));
         btnAsian.setText("Asian");
         btnAsian.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -738,7 +775,7 @@ public class MainGameFrame extends javax.swing.JFrame {
                     .addComponent(txtPlayerScores_dlgHighScore, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(btnClose_dlgHighScore)
-                .addContainerGap(24, Short.MAX_VALUE))
+                .addContainerGap(36, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout dlgHighScoreLayout = new javax.swing.GroupLayout(dlgHighScore.getContentPane());
@@ -749,11 +786,11 @@ public class MainGameFrame extends javax.swing.JFrame {
         );
         dlgHighScoreLayout.setVerticalGroup(
             dlgHighScoreLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Hangman Legacy v1.0.0");
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Hangman v1.0.0");
         setResizable(false);
 
         pnlPlayArea.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Word Display", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Dialog", 1, 14))); // NOI18N
@@ -1070,22 +1107,6 @@ public class MainGameFrame extends javax.swing.JFrame {
             }
         });
 
-        btnNextLevel.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
-        btnNextLevel.setText("Next Level");
-        btnNextLevel.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnNextLevelActionPerformed(evt);
-            }
-        });
-
-        btnNewGame.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
-        btnNewGame.setText("New Game");
-        btnNewGame.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnNewGameActionPerformed(evt);
-            }
-        });
-
         lblLevelTxt.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
         lblLevelTxt.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         lblLevelTxt.setText("Level");
@@ -1100,14 +1121,6 @@ public class MainGameFrame extends javax.swing.JFrame {
         txtSecretWord.setText("TEXT____SECRET");
         txtSecretWord.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 
-        btnHighScore.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
-        btnHighScore.setText("High Scores");
-        btnHighScore.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnHighScoreActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout pnlPlayAreaLayout = new javax.swing.GroupLayout(pnlPlayArea);
         pnlPlayArea.setLayout(pnlPlayAreaLayout);
         pnlPlayAreaLayout.setHorizontalGroup(
@@ -1116,12 +1129,6 @@ public class MainGameFrame extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(pnlPlayAreaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(txtSecretWord, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, pnlPlayAreaLayout.createSequentialGroup()
-                        .addComponent(btnNewGame, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(83, 83, 83)
-                        .addComponent(btnHighScore, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(83, 83, 83)
-                        .addComponent(btnNextLevel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, pnlPlayAreaLayout.createSequentialGroup()
                         .addGroup(pnlPlayAreaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, pnlPlayAreaLayout.createSequentialGroup()
@@ -1191,15 +1198,10 @@ public class MainGameFrame extends javax.swing.JFrame {
             pnlPlayAreaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlPlayAreaLayout.createSequentialGroup()
                 .addComponent(txtSecretWord, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(pnlPlayAreaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblLevelTxt)
                     .addComponent(lblLevel))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(pnlPlayAreaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnNextLevel)
-                    .addComponent(btnNewGame)
-                    .addComponent(btnHighScore))
                 .addGap(18, 18, 18)
                 .addGroup(pnlPlayAreaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnF, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1275,7 +1277,7 @@ public class MainGameFrame extends javax.swing.JFrame {
                 .addGroup(pnlPlayerInfoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(lblTopic, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(lblPlayerScore, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lblDifficulty, javax.swing.GroupLayout.DEFAULT_SIZE, 179, Short.MAX_VALUE))
+                    .addComponent(lblDifficulty, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         pnlPlayerInfoLayout.setVerticalGroup(
@@ -1303,30 +1305,105 @@ public class MainGameFrame extends javax.swing.JFrame {
         pnlDrawHangman.setLayout(pnlDrawHangmanLayout);
         pnlDrawHangmanLayout.setHorizontalGroup(
             pnlDrawHangmanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 289, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
         pnlDrawHangmanLayout.setVerticalGroup(
             pnlDrawHangmanLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 354, Short.MAX_VALUE)
         );
 
+        jPanel2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        btnNextLevel.setBackground(new java.awt.Color(204, 255, 204));
+        btnNextLevel.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        btnNextLevel.setText("Next Level");
+        btnNextLevel.setFocusPainted(false);
+        btnNextLevel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNextLevelActionPerformed(evt);
+            }
+        });
+
+        btnHighScore.setBackground(new java.awt.Color(255, 255, 204));
+        btnHighScore.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        btnHighScore.setText("High Scores");
+        btnHighScore.setFocusPainted(false);
+        btnHighScore.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnHighScoreActionPerformed(evt);
+            }
+        });
+
+        btnNewGame.setBackground(new java.awt.Color(102, 0, 102));
+        btnNewGame.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        btnNewGame.setForeground(new java.awt.Color(255, 255, 255));
+        btnNewGame.setText("New Game");
+        btnNewGame.setFocusPainted(false);
+        btnNewGame.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNewGameActionPerformed(evt);
+            }
+        });
+
+        btnMainMenu.setBackground(new java.awt.Color(255, 204, 204));
+        btnMainMenu.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        btnMainMenu.setText("Main Menu");
+        btnMainMenu.setFocusPainted(false);
+        btnMainMenu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMainMenuActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(btnMainMenu, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(92, 92, 92)
+                .addComponent(btnNewGame, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(92, 92, 92)
+                .addComponent(btnHighScore, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(92, 92, 92)
+                .addComponent(btnNextLevel, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(btnMainMenu)
+                    .addComponent(btnNewGame)
+                    .addComponent(btnHighScore)
+                    .addComponent(btnNextLevel))
+                .addContainerGap())
+        );
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(pnlPlayerInfo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(pnlDrawHangman, javax.swing.GroupLayout.DEFAULT_SIZE, 299, Short.MAX_VALUE))
-                .addGap(6, 6, 6)
-                .addComponent(pnlPlayArea, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(pnlPlayerInfo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(pnlDrawHangman, javax.swing.GroupLayout.DEFAULT_SIZE, 299, Short.MAX_VALUE))
+                        .addGap(6, 6, 6)
+                        .addComponent(pnlPlayArea, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(pnlPlayArea, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
@@ -1558,6 +1635,11 @@ public class MainGameFrame extends javax.swing.JFrame {
         dlgHighScore.setVisible(false);
     }//GEN-LAST:event_btnClose_dlgHighScoreActionPerformed
 
+    private void btnMainMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMainMenuActionPerformed
+        // TODO add your handling code here:
+        this.windowClosing(null);
+    }//GEN-LAST:event_btnMainMenuActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -1614,6 +1696,7 @@ public class MainGameFrame extends javax.swing.JFrame {
     private javax.swing.JButton btnK;
     private javax.swing.JButton btnL;
     private javax.swing.JButton btnM;
+    private javax.swing.JButton btnMainMenu;
     private javax.swing.JButton btnN;
     private javax.swing.JButton btnNewGame;
     private javax.swing.JButton btnNewGame_dlgGameOver;
@@ -1640,6 +1723,7 @@ public class MainGameFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JLabel lblDifficulty;
@@ -1668,4 +1752,28 @@ public class MainGameFrame extends javax.swing.JFrame {
     private javax.swing.JLabel txtSecretWord;
     private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void windowOpened(WindowEvent e) {
+    }
+
+    @Override
+    public void windowClosed(WindowEvent e) {
+    }
+
+    @Override
+    public void windowIconified(WindowEvent e) {
+    }
+
+    @Override
+    public void windowDeiconified(WindowEvent e) {
+    }
+
+    @Override
+    public void windowActivated(WindowEvent e) {
+    }
+
+    @Override
+    public void windowDeactivated(WindowEvent e) {
+    }
 }

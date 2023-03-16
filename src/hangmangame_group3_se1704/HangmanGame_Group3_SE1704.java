@@ -6,6 +6,7 @@
 package hangmangame_group3_se1704;
 
 import ui.MainGameFrame;
+import ui.MainMenu;
 
 /**
  *
@@ -18,8 +19,9 @@ public class HangmanGame_Group3_SE1704 {
      */
     public static void main(String[] args) {
         // TODO code application logic here
-        MainGameFrame game = new MainGameFrame();
-        game.setLocationRelativeTo(null);
+        MainMenu menu = new MainMenu();
+        menu.setVisible(true);
+        menu.setLocationRelativeTo(null);
     }
     
 }

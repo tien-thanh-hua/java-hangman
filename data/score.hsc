@@ -1,5 +1,5 @@
-tien-thanh-hua 19200
-PlayerUnknown 12000
-Player1 9001
-UnkeptHaroldd 8800
-TheBlackThunder 8800
+ThanhHTCE171454 19200
+MinhTDCE170029 14400
+DuyNH170563 5000
+QuocLTCE161868 2000
+ThoVPCE161117 800
