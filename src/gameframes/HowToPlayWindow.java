@@ -4,13 +4,13 @@ import components.GameWindow;
 import gamepanels.HowToPlayPanel;
 import java.awt.Toolkit;
 
-
 public class HowToPlayWindow extends GameWindow {
     
+    private HowToPlayPanel howToPlayPanel;
     
     public HowToPlayWindow(HowToPlayPanel howToPlayPanel) {
-        
-        this.add(howToPlayPanel);
+        this.howToPlayPanel = howToPlayPanel;
+        this.add(this.howToPlayPanel);
         this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/images/hangman_128.png")));
         this.setTitle("How to Play");
         
