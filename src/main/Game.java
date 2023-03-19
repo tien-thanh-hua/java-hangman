@@ -156,6 +156,7 @@ public class Game {
                 mainmenuWindow.dispose();
                 howToPlayPanel = new HowToPlayPanel(this);
                 howToPlayWindow = new HowToPlayWindow(howToPlayPanel);
+                howToPlayWindow.setVisible(true);
                 break;
             case QUIT:
                 mainmenuWindow.dispose();
