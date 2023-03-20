@@ -63,6 +63,7 @@ public class MainMenu extends javax.swing.JFrame
         btnAboutUs = new javax.swing.JButton();
         btnQuit = new javax.swing.JButton();
 
+        dlgHowToPlay.setTitle("How To Play");
         dlgHowToPlay.setModal(true);
         dlgHowToPlay.setUndecorated(true);
         dlgHowToPlay.setPreferredSize(new java.awt.Dimension(650, 450));
@@ -133,6 +134,7 @@ public class MainMenu extends javax.swing.JFrame
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
+        dlgAboutUs.setTitle("About Us");
         dlgAboutUs.setModal(true);
         dlgAboutUs.setUndecorated(true);
         dlgAboutUs.setPreferredSize(new java.awt.Dimension(650, 596));
@@ -213,7 +215,7 @@ public class MainMenu extends javax.swing.JFrame
         setResizable(false);
 
         jLabel1.setFont(new java.awt.Font("Dialog", 1, 48)); // NOI18N
-        jLabel1.setText("HANGMAN 2.0");
+        jLabel1.setText("HANGMAN PLUS");
 
         btnStartGame.setBackground(new java.awt.Color(223, 249, 243));
         btnStartGame.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
@@ -268,14 +270,14 @@ public class MainMenu extends javax.swing.JFrame
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(144, 144, 144)
+                .addGap(113, 113, 113)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(jLabel1)
                     .addComponent(btnStartGame, javax.swing.GroupLayout.PREFERRED_SIZE, 329, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnHowToPlay, javax.swing.GroupLayout.PREFERRED_SIZE, 329, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnAboutUs, javax.swing.GroupLayout.PREFERRED_SIZE, 329, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnQuit, javax.swing.GroupLayout.PREFERRED_SIZE, 329, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(144, Short.MAX_VALUE))
+                    .addComponent(btnQuit, javax.swing.GroupLayout.PREFERRED_SIZE, 329, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1))
+                .addContainerGap(114, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -323,6 +325,7 @@ public class MainMenu extends javax.swing.JFrame
                 + "word as possible and get the highest score.\n\n"
                 + "Good luck!";
         txtHowToPlay.setText(gameRules);
+        txtHowToPlay.setCaretPosition(0);
         dlgHowToPlay.setLocationRelativeTo(null);
         dlgHowToPlay.setVisible(true);
     }//GEN-LAST:event_btnHowToPlayActionPerformed
