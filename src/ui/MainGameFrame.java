@@ -19,7 +19,6 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.AbstractButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextPane;
@@ -793,7 +792,7 @@ public class MainGameFrame extends javax.swing.JFrame
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Hangman v1.0.0");
+        setTitle("Hangman v1.0.1");
         setResizable(false);
 
         pnlPlayArea.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Word Display", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Dialog", 1, 14))); // NOI18N

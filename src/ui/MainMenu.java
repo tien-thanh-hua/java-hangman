@@ -15,7 +15,7 @@ import javax.swing.JOptionPane;
 
 /**
  *
- * @author CE171454 Hua Tien Thanh
+ * @author CE170028 Truong Duy Minh
  */
 public class MainMenu extends javax.swing.JFrame 
         implements WindowListener{
@@ -66,7 +66,6 @@ public class MainMenu extends javax.swing.JFrame
         dlgHowToPlay.setTitle("How To Play");
         dlgHowToPlay.setModal(true);
         dlgHowToPlay.setUndecorated(true);
-        dlgHowToPlay.setPreferredSize(new java.awt.Dimension(650, 450));
         dlgHowToPlay.setResizable(false);
         dlgHowToPlay.setSize(new java.awt.Dimension(650, 450));
 
@@ -137,7 +136,6 @@ public class MainMenu extends javax.swing.JFrame
         dlgAboutUs.setTitle("About Us");
         dlgAboutUs.setModal(true);
         dlgAboutUs.setUndecorated(true);
-        dlgAboutUs.setPreferredSize(new java.awt.Dimension(650, 596));
         dlgAboutUs.setResizable(false);
         dlgAboutUs.setSize(new java.awt.Dimension(650, 596));
 
@@ -211,7 +209,7 @@ public class MainMenu extends javax.swing.JFrame
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Hangman v1.0.0");
+        setTitle("Hangman v1.0.1");
         setResizable(false);
 
         jLabel1.setFont(new java.awt.Font("Dialog", 1, 48)); // NOI18N
