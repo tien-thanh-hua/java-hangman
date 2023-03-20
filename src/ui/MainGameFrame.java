@@ -37,12 +37,30 @@ public class MainGameFrame extends javax.swing.JFrame
     private GameInstance game = null;
     private final Font OPTION_PANE_FONT = new Font("Segoe UI", Font.BOLD, 24);
 
+    /**
+     * Creates new form HangmanGame
+     */
+    public MainGameFrame() {
+        initComponents();
+        this.setLocationRelativeTo(null); // put this into the center of screen
+        addWindowListener(this);
+        game = new GameInstance();
+        initFrame();
+    }
+    
+    /**
+     * Updates the GameInstance's difficulty and the JLabel displaying the
+     * current difficulty.
+     * @param difficulty the new difficulty to be updated
+     */
     public void setDifficulty(String difficulty) {
         game.setDifficulty(difficulty);
-        game.setDifficultyFactor(difficulty);
         updateLblDifficulty();
     }
 
+    /**
+     * Initializes the custom components in MainGameFrame.
+     */
     public void initFrame() {
         showChooseDifficultyDialog();
 
@@ -65,6 +83,10 @@ public class MainGameFrame extends javax.swing.JFrame
         btnNextLevel.setContentAreaFilled(false);
     }
 
+    /**
+     * Resets some components (Hangman Painting, buttons, Game Information, Word
+     * Display.
+     */
     public void resetFrame() {
         pnlDrawHangman.revalidate();
         pnlDrawHangman.repaint();
@@ -85,11 +107,18 @@ public class MainGameFrame extends javax.swing.JFrame
         updateLblLevel();
     }
 
+    /**
+     * Display the choosing difficulty dialog.
+     */
     public void showChooseDifficultyDialog() {
         dlgChooseDifficulty.setLocationRelativeTo(null);
         dlgChooseDifficulty.setVisible(true);
     }
 
+    /**
+     * Disables all the letter buttons. Should be called when the current level
+     * is completed, or when the game is over.
+     */
     public void disableLetterButtons() {
         for (Enumeration<AbstractButton> buttons = btgLetterButtons.getElements(); buttons.hasMoreElements();) {
             AbstractButton button = buttons.nextElement();
@@ -97,6 +126,9 @@ public class MainGameFrame extends javax.swing.JFrame
         }
     }
 
+    /**
+     * Enables all letter buttons. Should be used every time a new level starts.
+     */
     public void resetLetterButtons() {
         for (Enumeration<AbstractButton> buttons = btgLetterButtons.getElements();
                 buttons.hasMoreElements();) {
@@ -105,6 +137,9 @@ public class MainGameFrame extends javax.swing.JFrame
         }
     }
 
+    /**
+     * Initializes the secret word in the Word Display panel.
+     */
     public void initTxtSecretWord() {
         Map<TextAttribute, Object> attributes = new HashMap<>();
         attributes.put(TextAttribute.TRACKING, 0.35); // sets character spacing
@@ -113,6 +148,9 @@ public class MainGameFrame extends javax.swing.JFrame
         txtSecretWord.setText(game.getQuestion().getUserString());
     }
     
+    /**
+     * Updates the Difficulty JLabel in the Game Information panel.
+     */
     public void updateLblDifficulty() {
         String properDifficulty = "";
         if (!game.getDifficulty().isEmpty()) {
@@ -122,6 +160,9 @@ public class MainGameFrame extends javax.swing.JFrame
         lblDifficulty.setText(properDifficulty);
     }
     
+    /**
+     * Updates the Topic JLabel in the Game Information panel.
+     */
     public void updateLblTopic() {
         String properTopic = "";
         if (!(game.getQuestion() == null)) {
@@ -135,11 +176,17 @@ public class MainGameFrame extends javax.swing.JFrame
         lblTopic.setText(properTopic);
     }
     
+    /**
+     * Updates the Level JLabel in the Word Display panel.
+     */
     public void updateLblLevel() {
         game.increaseLevel();
         lblLevel.setText(game.getLevel() + "");
     }
 
+    /**
+     * Updates the hidden word in the Word Display panel.
+     */
     public void updateLblSecret() {
         game.updateUserString();
         if (game.isLevelCompleted()) { // if the level is completed, text turns green
@@ -151,9 +198,13 @@ public class MainGameFrame extends javax.swing.JFrame
         }
     }
 
+    /**
+     * Updates the Score JLabel in the Game Information panel.
+     */
     public void updateLblScore() {
         lblPlayerScore.setText(game.getScore() + "");
     }
+    
     /**
      * Should be called after disabling letter buttons to prevent last letter
      * button being disabled after losing and starting new game.
@@ -189,10 +240,13 @@ public class MainGameFrame extends javax.swing.JFrame
         } else if (game.isGameOver()) {
             // stops current game, display score
             showGameOver();
-            game.gameOver();
+            //game.gameOver();
         }
     }
 
+    /**
+     * General method for all the NewGame variants. Restarts the game.
+     */
     public void btnNewGameActionPerformed() {
         btnNewGame.setEnabled(false);
         showChooseDifficultyDialog();
@@ -200,19 +254,33 @@ public class MainGameFrame extends javax.swing.JFrame
         resetFrame();
     }
 
+    /**
+     * General method for all the difficulty buttons. Updates the GameInstance's
+     * difficulty, then generates a random Question based on the difficulty chosen.
+     * 
+     * @param difficulty the difficulty of the calling button
+     */
     public void btnDifficultyActionPerformed(String difficulty) {
         setDifficulty(difficulty);
+        game.setRandomQuestion(difficulty);
         pnlDrawHangman.repaint();
         dlgChooseDifficulty.setVisible(false);
         this.setVisible(true);
     }
 
+    /**
+     * Enables the Next Level button while disabling all the letter buttons.
+     */
     public void levelComplete() {
         btnNextLevel.setContentAreaFilled(true);
         btnNextLevel.setEnabled(true);
         disableLetterButtons();
     }
 
+    /**
+     * Sets a JTextPane's text alignment to right-align.
+     * @param txtPane the JTextPane that needs to be right-aligned.
+     */
     public void setAlignmentRight(JTextPane txtPane) {
         StyledDocument doc = txtPane.getStyledDocument();
         SimpleAttributeSet center = new SimpleAttributeSet();
@@ -220,6 +288,11 @@ public class MainGameFrame extends javax.swing.JFrame
         doc.setParagraphAttributes(0, doc.getLength(), center, false);
     }
 
+    /**
+     * Displays the Game Over dialog to the player.<br>
+     * If the player's score is within the top 5 player scores, a different
+     * dialog shows up that allows the player to save their information.
+     */
     public void showGameOver() {
         disableLetterButtons();
         ArrayList<Player> top5Players = game.getTop5Players();
@@ -260,6 +333,9 @@ public class MainGameFrame extends javax.swing.JFrame
         }
     }
 
+    /**
+     * Displays a top 5 high scores dialog.
+     */
     public void showHighScore() {
         String top5Names = "", top5Scores = "";
         ArrayList<Player> top5Players = game.getTop5Players();
@@ -279,10 +355,6 @@ public class MainGameFrame extends javax.swing.JFrame
         dlgHighScore.setVisible(true);
     }
 
-    public void printTop5(JTextPane txtPane) {
-
-    }
-
     @Override
     public void windowClosing(WindowEvent e) {
         JLabel question = new JLabel("Do you want to return to main menu?");
@@ -296,17 +368,6 @@ public class MainGameFrame extends javax.swing.JFrame
             menu.setLocationRelativeTo(null);
             this.dispose();
         }
-    }
-    
-    /**
-     * Creates new form HangmanGame
-     */
-    public MainGameFrame() {
-        initComponents();
-        this.setLocationRelativeTo(null); // put this into the center of screen
-        addWindowListener(this);
-        game = new GameInstance();
-        initFrame();
     }
 
     /**
@@ -629,8 +690,9 @@ public class MainGameFrame extends javax.swing.JFrame
         jLabel4.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 
         btnEasy.setBackground(new java.awt.Color(204, 255, 204));
-        btnEasy.setFont(new java.awt.Font("Dialog", 0, 24)); // NOI18N
+        btnEasy.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
         btnEasy.setText("Easy");
+        btnEasy.setFocusPainted(false);
         btnEasy.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnEasyActionPerformed(evt);
@@ -638,8 +700,9 @@ public class MainGameFrame extends javax.swing.JFrame
         });
 
         btnNormal.setBackground(new java.awt.Color(255, 255, 204));
-        btnNormal.setFont(new java.awt.Font("Dialog", 0, 24)); // NOI18N
+        btnNormal.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
         btnNormal.setText("Normal");
+        btnNormal.setFocusPainted(false);
         btnNormal.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnNormalActionPerformed(evt);
@@ -647,8 +710,9 @@ public class MainGameFrame extends javax.swing.JFrame
         });
 
         btnHard.setBackground(new java.awt.Color(255, 204, 204));
-        btnHard.setFont(new java.awt.Font("Dialog", 0, 24)); // NOI18N
+        btnHard.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
         btnHard.setText("Hard");
+        btnHard.setFocusPainted(false);
         btnHard.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnHardActionPerformed(evt);
@@ -659,6 +723,7 @@ public class MainGameFrame extends javax.swing.JFrame
         btnAsian.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
         btnAsian.setForeground(new java.awt.Color(255, 255, 255));
         btnAsian.setText("Asian");
+        btnAsian.setFocusPainted(false);
         btnAsian.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnAsianActionPerformed(evt);

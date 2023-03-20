@@ -9,13 +9,15 @@ import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import javax.swing.ImageIcon;
+import javax.swing.JEditorPane;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 /**
  *
- * @author CE170028 Truong Duy Minh
+ * @author CE170028 Truong Duy Minh, CE171454 Hua Tien Thanh
  */
 public class MainMenu extends javax.swing.JFrame 
         implements WindowListener{
@@ -44,10 +46,10 @@ public class MainMenu extends javax.swing.JFrame
         jPanel1 = new javax.swing.JPanel();
         lblHowToPlay = new javax.swing.JLabel();
         btnClose_dlgHowToPlay = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        txtHowToPlay = new javax.swing.JTextPane();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        txtHowToPlay = new javax.swing.JEditorPane();
         dlgAboutUs = new javax.swing.JDialog();
-        jPanel2 = new javax.swing.JPanel();
+        pnlAboutUs = new javax.swing.JPanel();
         lblAboutUs = new javax.swing.JLabel();
         btnClose_dlgAboutUs = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -57,6 +59,8 @@ public class MainMenu extends javax.swing.JFrame
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
+        ImageIcon fptLogo = new ImageIcon("src/images/2021-FPTU-Eng_143x72.png");
+        lblLogo = new javax.swing.JLabel(fptLogo);
         jLabel1 = new javax.swing.JLabel();
         btnStartGame = new javax.swing.JButton();
         btnHowToPlay = new javax.swing.JButton();
@@ -89,26 +93,24 @@ public class MainMenu extends javax.swing.JFrame
             }
         });
 
-        txtHowToPlay.setEditable(false);
+        txtHowToPlay.setContentType("text/html"); // NOI18N
         txtHowToPlay.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        txtHowToPlay.setAutoscrolls(false);
-        txtHowToPlay.setFocusable(false);
-        jScrollPane1.setViewportView(txtHowToPlay);
+        jScrollPane4.setViewportView(txtHowToPlay);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addGap(36, 36, 36)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane1)
-                    .addComponent(lblHowToPlay, javax.swing.GroupLayout.DEFAULT_SIZE, 578, Short.MAX_VALUE))
-                .addGap(36, 36, 36))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnClose_dlgHowToPlay, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(226, 226, 226))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addGap(36, 36, 36)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane4)
+                    .addComponent(lblHowToPlay, javax.swing.GroupLayout.DEFAULT_SIZE, 578, Short.MAX_VALUE))
+                .addGap(36, 36, 36))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -116,7 +118,7 @@ public class MainMenu extends javax.swing.JFrame
                 .addContainerGap()
                 .addComponent(lblHowToPlay)
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
                 .addComponent(btnClose_dlgHowToPlay)
                 .addGap(24, 24, 24))
@@ -137,17 +139,14 @@ public class MainMenu extends javax.swing.JFrame
         dlgAboutUs.setModal(true);
         dlgAboutUs.setUndecorated(true);
         dlgAboutUs.setResizable(false);
-        dlgAboutUs.setSize(new java.awt.Dimension(650, 596));
+        dlgAboutUs.setSize(new java.awt.Dimension(750, 593));
 
-        jPanel2.setBackground(new java.awt.Color(253, 235, 252));
-        jPanel2.setLayout(null);
+        pnlAboutUs.setBackground(new java.awt.Color(253, 235, 252));
 
         lblAboutUs.setFont(new java.awt.Font("Segoe UI", 1, 36)); // NOI18N
         lblAboutUs.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lblAboutUs.setText("About Us");
         lblAboutUs.setVerticalAlignment(javax.swing.SwingConstants.TOP);
-        jPanel2.add(lblAboutUs);
-        lblAboutUs.setBounds(36, 12, 578, 48);
 
         btnClose_dlgAboutUs.setBackground(new java.awt.Color(153, 0, 0));
         btnClose_dlgAboutUs.setFont(new java.awt.Font("Dialog", 0, 24)); // NOI18N
@@ -161,51 +160,85 @@ public class MainMenu extends javax.swing.JFrame
                 btnClose_dlgAboutUsActionPerformed(evt);
             }
         });
-        jPanel2.add(btnClose_dlgAboutUs);
-        btnClose_dlgAboutUs.setBounds(230, 530, 185, 42);
 
         txtMemberName.setEditable(false);
         txtMemberName.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         txtMemberName.setFocusable(false);
         jScrollPane2.setViewportView(txtMemberName);
 
-        jPanel2.add(jScrollPane2);
-        jScrollPane2.setBounds(36, 299, 388, 210);
-
         txtMemberRollNo.setEditable(false);
         txtMemberRollNo.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         txtMemberRollNo.setFocusable(false);
         jScrollPane3.setViewportView(txtMemberRollNo);
 
-        jPanel2.add(jScrollPane3);
-        jScrollPane3.setBounds(442, 299, 172, 210);
-
         jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        jLabel2.setText("<html> This project was made by group 3, class SE1704, <br>FPT University<br> Semester: SP23<br> Subject: CSD201 (Data Structures and Algorithms)<br> Mentor: Vo Hong Khanh </html>");
-        jPanel2.add(jLabel2);
-        jLabel2.setBounds(36, 78, 578, 160);
+        jLabel2.setText("<html> This project was made by group 3, class SE1704, FPT University.<br> Semester: SP23<br> Subject: CSD201 (Data Structures and Algorithms)<br> Mentor: Vo Hong Khanh </html>");
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel3.setText("Member Name");
-        jPanel2.add(jLabel3);
-        jLabel3.setBounds(36, 256, 388, 25);
 
         jLabel4.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel4.setText("Roll No.");
-        jPanel2.add(jLabel4);
-        jLabel4.setBounds(442, 256, 172, 25);
+
+        lblLogo.setText("FPT Logo here");
+
+        javax.swing.GroupLayout pnlAboutUsLayout = new javax.swing.GroupLayout(pnlAboutUs);
+        pnlAboutUs.setLayout(pnlAboutUsLayout);
+        pnlAboutUsLayout.setHorizontalGroup(
+            pnlAboutUsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlAboutUsLayout.createSequentialGroup()
+                .addGap(36, 36, 36)
+                .addGroup(pnlAboutUsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblAboutUs, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 678, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlAboutUsLayout.createSequentialGroup()
+                        .addGroup(pnlAboutUsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(pnlAboutUsLayout.createSequentialGroup()
+                                .addComponent(lblLogo, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btnClose_dlgAboutUs, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(41, 41, 41))
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(30, 30, 30)
+                        .addGroup(pnlAboutUsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGap(36, 36, 36))
+        );
+        pnlAboutUsLayout.setVerticalGroup(
+            pnlAboutUsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlAboutUsLayout.createSequentialGroup()
+                .addGap(12, 12, 12)
+                .addComponent(lblAboutUs)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, Short.MAX_VALUE)
+                .addGroup(pnlAboutUsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(pnlAboutUsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(pnlAboutUsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblLogo, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnClose_dlgAboutUs))
+                .addGap(24, 24, 24))
+        );
 
         javax.swing.GroupLayout dlgAboutUsLayout = new javax.swing.GroupLayout(dlgAboutUs.getContentPane());
         dlgAboutUs.getContentPane().setLayout(dlgAboutUsLayout);
         dlgAboutUsLayout.setHorizontalGroup(
             dlgAboutUsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(pnlAboutUs, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         dlgAboutUsLayout.setVerticalGroup(
             dlgAboutUsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 596, Short.MAX_VALUE)
+            .addComponent(pnlAboutUs, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -306,24 +339,36 @@ public class MainMenu extends javax.swing.JFrame
 
     private void btnHowToPlayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHowToPlayActionPerformed
         // TODO add your handling code here:
-        String gameRules = "Welcome! If you have never played Hangman, or if you "
-                + "need a reminder, here are the rules of the game:\n\n"
-                + "1. Choose your difficulty: There are 4 options for you, "
-                + "choose wisely! Especially that last one...\n\n"
-                + "2. You will start from level 1. There will be a \"hidden word\" "
-                + "containing only underscores which must be fully revealed.\n\n"
-                + "3. To reveal the entire word, you must choose the letters "
-                + "that make up the hidden word.\n\n"
-                + "4. If you choose a correct letter, that letter will be revealed "
-                + "on the hidden word and your score will be increased.\n\n"
-                + "5. Choose a wrong option, and the Hangman painting will have "
-                + "one extra stroke drawn. The game ends when the painting is "
-                + "completed.\n\n"
-                + "6. There is no final level, your job is to complete as many "
-                + "word as possible and get the highest score.\n\n"
-                + "Good luck!";
+        String gameRules = 
+        "  <html>\n" +
+        "    <style>\n" +
+        "      html {\n" +
+        "        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;\n" +
+        "        font-size: 24;\n" +
+        "      }\n" +
+        "      ol {\n" +
+        "        text-align: justify;\n" +
+        "      }\n" +
+        "      li {\n" +
+        "        margin: 4px\n" +
+        "      }\n" +
+        "    </style>\n" +
+        "    <p>Welcome! If you have never played Hangman, or if you need a reminder, here are the rules of the game:</p>\n" +
+        "    <ol>\n" +
+        "      <li>Choose your difficulty: There are 4 options for you, choose wisely! Especially that last one...</li>\n" +
+        "      <li>You will start from level 1. There will be a \"hidden word\" containing only underscores which must be fully revealed.</li>\n" +
+        "      <li>To reveal the entire word, you must choose the letters that make up the hidden word.</li>\n" +
+        "      <li>If you choose a correct letter, that letter will be revealed on the hidden word and your score will be increased.</li>\n" +
+        "      <li>Choose a wrong option, and the Hangman painting will have one extra stroke drawn. The game ends when the painting is completed.</li>\n" +
+        "      <li>There is no final level, your job is to complete as many word as possible and get the highest score.</li>\n" +
+        "    </ol>\n" +
+        "    <p>Good luck!</p>\n" +
+        "  </html>";
+        Font editorPaneFont = new Font("Segoe UI", Font.PLAIN, 24);
+        txtHowToPlay.putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES, Boolean.TRUE);
+        txtHowToPlay.setFont(editorPaneFont);
         txtHowToPlay.setText(gameRules);
-        txtHowToPlay.setCaretPosition(0);
+        txtHowToPlay.setCaretPosition(0); // auto scrolls to the top
         dlgHowToPlay.setLocationRelativeTo(null);
         dlgHowToPlay.setVisible(true);
     }//GEN-LAST:event_btnHowToPlayActionPerformed
@@ -412,13 +457,14 @@ public class MainMenu extends javax.swing.JFrame
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JLabel lblAboutUs;
     private javax.swing.JLabel lblHowToPlay;
-    private javax.swing.JTextPane txtHowToPlay;
+    private javax.swing.JLabel lblLogo;
+    private javax.swing.JPanel pnlAboutUs;
+    private javax.swing.JEditorPane txtHowToPlay;
     private javax.swing.JTextPane txtMemberName;
     private javax.swing.JTextPane txtMemberRollNo;
     // End of variables declaration//GEN-END:variables

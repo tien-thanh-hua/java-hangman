@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.NoSuchElementException;
 import java.util.Random;
 import java.util.Scanner;
-import javax.swing.JOptionPane;
 
 /**
  *
@@ -45,6 +44,9 @@ public class GameInstance {
     private Player player;
     private char playerChoice;
 
+    /**
+     * Creates a new GameInstance.
+     */
     public GameInstance() {
         
         this.hangMan = new Hangman();
@@ -57,58 +59,109 @@ public class GameInstance {
         this.player = new Player("", 0); // current player data is empty
         
         readScoreFile();
-        readAllWordFiles();
+        readWordFiles();
     }
 
+    /**
+     * Increases the current game level by 1.
+     */
     public void increaseLevel() {
         this.setLevel(level + 1);
     }
 
-    private enum QuestionTopics {
-        City,
-    }
-
     // getters and setters
+
+    /**
+     * Returns the current player's score.
+     * @return the current player's score
+     */
     public int getScore() {
         return score;
     }
 
+    /**
+     * Directly updates the current player's score. Should be used within
+     * increaseScore().
+     * @param score the new player's score
+     */
     public void setScore(int score) {
         this.score = score;
     }
 
+    /**
+     * Returns the current game's level.
+     * @return the current game's level
+     */
     public int getLevel() {
         return level;
     }
 
+    /**
+     * Updates the current game's level.
+     * @param level the new level of the current game
+     */
     public void setLevel(int level) {
         this.level = level;
     }
 
+    /**
+     * Returns the player's latest chosen character.
+     * @return the player's latest chosen character
+     */
     public char getPlayerChoice() {
         return playerChoice;
     }
 
+    /**
+     * Updates the player's latest chosen character.
+     * @param playerChoice the new character to be updated
+     */
     public void setPlayerChoice(char playerChoice) {
         this.playerChoice = playerChoice;
     }
 
+    /**
+     * Returns the Question object of this GameInstance.
+     * There can only be one Question instance running per game.
+     * @return the Question instance
+     */
     public Question getQuestion() {
         return question;
     }
 
+    /**
+     * Updates the Question instance of this GameInstance.
+     * Note that this method is called only once (when the initial Question object
+     * is null). Its primary goal is to initialize the Question instance with
+     * actual data, all subsequent levels will only update its data without calling
+     * this method.
+     * @param question the initialized Question object to be set
+     */
     public void setQuestion(Question question) {
         this.question = question;
     }
 
+    /**
+     * Returns the Hangman instance of this GameInstance.
+     * Mostly used as an argument to the HangmanCanvas constructor.
+     * @return the Hangman instance
+     */
     public Hangman getHangMan() {
         return hangMan;
     }
 
+    /**
+     * Replaces the current Hangman of this GameInstance.
+     * @param hangMan the new Hangman instance
+     */
     public void setHangMan(Hangman hangMan) {
         this.hangMan = hangMan;
     }
 
+    /**
+     * Returns the current game's difficulty.
+     * @return the current game's difficulty
+     */
     public String getDifficulty() {
         return difficulty;
     }
@@ -127,7 +180,7 @@ public class GameInstance {
      * <li>"hard": state = 3</li>
      * <li>"asian": state = 3</li>
      * </ul>
-     *
+     * This method also initialize the current Hangman's state.
      * @param difficulty (String) The difficulty to be set.
      */
     public void setDifficulty(String difficulty) {
@@ -145,14 +198,44 @@ public class GameInstance {
                 hangManState = 0;
                 break;
         }
-        setRandomQuestion(difficulty);
         this.hangMan.setState(hangManState);
     }
 
+    /**
+     * Returns the current game's difficulty factor. It is used in calculating
+     * the user score (more specifically, how many points to increase per correct
+     * guess).<br>
+     * Difficulty factor depends on the game difficulty, as such this method
+     * should only be called after the difficulty has been updated.
+     * <ul>
+     * <li>"easy": difficultyFactor = 1</li>
+     * <li>"normal": difficultyFactor = 2</li>
+     * <li>"hard": difficultyFactor = 3</li>
+     * <li>"asian": difficultyFactor = 8</li>
+     * </ul>
+     * @return the current difficulty factor
+     */
     public int getDifficultyFactor() {
         return difficultyFactor;
     }
 
+    /**
+     * Updates the current game's difficulty factor. It is used in calculating
+     * the user score (more specifically, how many points to increase per correct
+     * guess).<br>
+     * Difficulty factor depends on the game difficulty, as such this method
+     * should only be called after the difficulty has been updated.
+     * <ul>
+     * <li>"easy": difficultyFactor = 1</li>
+     * <li>"normal": difficultyFactor = 2</li>
+     * <li>"hard": difficultyFactor = 3</li>
+     * <li>"asian": difficultyFactor = 8</li>
+     * <li>Other values: difficultyFactor = 0</li>
+     * </ul>
+     * 
+     * @param difficulty the updated difficulty used to determine the new
+     * difficulty factor
+     */
     public void setDifficultyFactor(String difficulty) {
         switch (difficulty) {
             case "easy":
@@ -173,35 +256,57 @@ public class GameInstance {
         }
     }
 
+    /**
+     * Directly updates the game's difficulty factor. Should be used within
+     * setDifficultyFactor(String difficulty).
+     * @param difficultyFactor the new integer value (factor)
+     */
     public void setDifficultyFactor(int difficultyFactor) {
         this.difficultyFactor = difficultyFactor;
     }
-
-    public Player getPlayer() {
-        return player;
-    }
-
-    public void setPlayer(Player player) {
-        this.player = player;
-    }
     
+    /**
+     * Returns the list of 5 players with the highest score.
+     * @return the top 5 list of Players
+     */
     public ArrayList<Player> getTop5Players() {
         return top5Players;
     }
 
+    /**
+     * Checks whether the current level is completed by checking the level's
+     * Question instance.
+     * @return true if the question is completed (all hidden words have been
+     * revealed), false otherwise
+     */
     public boolean isLevelCompleted() {
         return this.question.isCompleted();
     }
 
+    /**
+     * Checks whether the current game is over by checking the Hangman instance.
+     * @return true if the Hangman instance has state == 9 (the painting is
+     * completed), false otherwise
+     */
     public boolean isGameOver() {
         return this.hangMan.getState() == 9;
     }
 
+    /**
+     * Checks whether the player has chosen the correct letter.
+     * @return true if the player's chosen letter matches one of the letters of
+     * the Question's hidden word, false otherwise
+     */
     public boolean isCorrect() {
         return question.getSecretString().contains(Character.toString(playerChoice));
     }    
     // end of getters and setters
 
+    /**
+     * Updates the current Player's name and score, then updates the top 5 list
+     * with the new Player.
+     * @param name the name of the player (read from user input)
+     */
     public void savePlayer(String name) {
         player.setName(name);
         player.setScore(score);
@@ -209,36 +314,38 @@ public class GameInstance {
         updateTop5Players(top5Players);
     }
 
+    /**
+     * Updates the Question's userString property, replacing at least one of its
+     * underscore characters with the player's (correctly) chosen character.
+     */
     public void updateUserString() {
         question.updateString(playerChoice);
     }
 
+    /**
+     * Updates the current Player's score with difficulty factor taken into
+     * account.
+     */
     public void increaseScore() {
         this.setScore(this.getScore() + 100 * difficultyFactor);
     }
-
-    public boolean containsWord(final ArrayList<Word> list, final String wordStr) {
-        return list.stream().map(Word::getWord).filter(wordStr::equals).findFirst().isPresent();
-    }
     
+    /**
+     * Extracts the topic from a file's name. Inputted file name must match the
+     * correct format, otherwise the return value might be incorrect.
+     * @param fileName the file's name that follows the format: topic_difficulty.hwd
+     * @return the topic of the inputted word set
+     */
     public String getTopicFromFileName(String fileName) {
         int stopIndex = fileName.indexOf('_');
         return fileName.substring(0, stopIndex);
     }
-    
-    public void readAllWordFiles() {
-        ArrayList<String> topics = new ArrayList<>();
-        topics.add("animals");
-        topics.add("clothes");
-        topics.add("colors");
-        topics.add("countries");
-        topics.add("fruits");
-        topics.forEach((topic) -> {
-            readWordFile(topic);
-        });
-    }
 
-    public void readWordFile(String topic) {
+    /**
+     * Reads all word files that has a topic. Since the default words file does
+     * not have a topic in its name, it will not be read.
+     */
+    public void readWordFiles() {
         HashMap<String, Word> tmpNormalWords = new HashMap<>();
         HashMap<String, Word> tmpHardWords = new HashMap<>();
         
@@ -247,8 +354,8 @@ public class GameInstance {
         boolean isFileSuccessfullyRead = false;
         while (!isFileSuccessfullyRead) {
             try {
-                File wordDir = new File("data/");
-                // gets all .hwd files EXCEPT words.hwd
+                File wordDir = new File("data/"); // sets the directory
+                // gets all .hwd files inside folder 'data' EXCEPT words.hwd
                 File[] wordFiles = wordDir.listFiles((d, name) -> (name.endsWith(".hwd") 
                         && !name.equals("words.hwd")));
                 Scanner fileSc = null;
@@ -292,6 +399,10 @@ public class GameInstance {
         }
     }
     
+    /**
+     * Reads the default word file, in case readWordFiles() did not succesfully
+     * read all word files.
+     */
     public void readDefaultWordFile() {
         HashMap<String, Word> tmpNormalWords = new HashMap<>();
         HashMap<String, Word> tmpHardWords = new HashMap<>();
@@ -338,6 +449,10 @@ public class GameInstance {
         }
     }
 
+    /**
+     * Creates a default word file, in case there are no default word file or
+     * the existing one is corrupted.
+     */
     public void createDefaultWordFile() {
         FileWriter fw = null;
         try {
@@ -373,6 +488,11 @@ public class GameInstance {
         }
     }
 
+    /**
+     * Reads the players' name and score data from a preexisting file. This
+     * method will call createDefaultScoreFile() if there is no score file or the
+     * existing one is corrupted.
+     */
     public void readScoreFile() {
         ArrayList<Player> players = new ArrayList<>();
         String playerName;
@@ -411,6 +531,10 @@ public class GameInstance {
         }
     }
 
+    /**
+     * Creates a default score file, in case there are no score file or
+     * the existing one is corrupted.
+     */
     public void createDefaultScoreFile() {
         FileWriter fw = null;
         try {
@@ -446,6 +570,11 @@ public class GameInstance {
         }
     }
 
+    /**
+     * Called each time the top 5 score list is updated. This method will save a
+     * snapshot of the list to the score file. If there is no score file, it will
+     * call createDefaultScoreFile().
+     */
     public void updateScoreFile() {
         FileWriter fw = null;
         try {
@@ -475,10 +604,22 @@ public class GameInstance {
         }
     }
     
+    /**
+     * Updates the current top 5 players list with a newer one. Should be called
+     * within updateTop5Players(ArrayList&lt;Player&gt; players).
+     * @param top5Players the new List of Players
+     */
     public void setTop5Players(ArrayList<Player> top5Players) {
         this.top5Players = top5Players;
     }
 
+    /**
+     * Sorts the top 5 players list in descending score order, and then removes
+     * all excessive entries (if any) so that the final list consists of no more
+     * than 5 players.
+     * @param players the unsorted top 5 player list taken after saving
+     * a new Player's score
+     */
     public void updateTop5Players(ArrayList<Player> players) {
         ArrayList<Player> top5 = players;
         Comparator<Player> playerComparator = (Player p1, Player p2) -> {
@@ -501,6 +642,11 @@ public class GameInstance {
         setTop5Players(top5);
     }
 
+    /**
+     * Returns the index of a player in the top 5 player list.
+     * @param playerName the name of the Player to be searched
+     * @return the index of the matching Player name, -1 if not found.
+     */
     public int getPlayerIndex(String playerName) {
         for (int i = 0; i < top5Players.size(); i++) {
             if (top5Players.get(i).getName().equals(playerName)) {
@@ -509,19 +655,22 @@ public class GameInstance {
         }
         return -1;
     }
-
-    public void gameOver() {
-        // if player score is amongst the top 5 high scores
-        // prompts to save the player name and score
-    }
     
+    /**
+     * Resets the current game's score and level. This should only be used when
+     * starting a new game.
+     */
     public void reset() {
         this.score = 0;
         this.level = 0;
     }
 
+    /**
+     * Resets the game's Hangman and changes the Question to a random one.
+     */
     public void nextLevel() {
         setDifficulty(difficulty);
+        setRandomQuestion(difficulty);
     }
 
     /**
@@ -559,5 +708,7 @@ public class GameInstance {
         } else { // after first game
             this.question.resetQuestion(wordStr, wordTopic);
         }
+        // Uncomment next line to enable cheating. Shame on you!
+        System.out.println("Hidden word: " + wordStr);
     }
 }
