@@ -408,7 +408,7 @@ public class MainMenu extends javax.swing.JFrame
         "    </style>\n" +
         "    <body>\n" + 
         "      <ol>\n" +
-        "      <li><strong>Truong Duy Minh (Leader)</strong></li>\n" +
+        "      <li>Truong Duy Minh (Leader)</li>\n" +
         "      <li>Nguyen Huu Duy</li>\n" +
         "      <li>Hua Tien Thanh</li>\n" +
         "      <li>Phan Khanh Linh</li>\n" +
@@ -434,7 +434,7 @@ public class MainMenu extends javax.swing.JFrame
         "    </style>\n" +
         "    <body>\n" + 
         "      <ul>\n" +
-        "      <li><strong>CE170029</strong></li>\n" +
+        "      <li>CE170029</li>\n" +
         "      <li>CE170563</li>\n" +
         "      <li>CE171454</li>\n" +
         "      <li>CE171528</li>\n" +
