@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package hangmangame_group3_se1704;
+package main;
 
 import ui.MainMenu;
 
@@ -11,7 +11,7 @@ import ui.MainMenu;
  *
  * @author CE171454 Hua Tien Thanh
  */
-public class HangmanGame_Group3_SE1704 {
+public class HangmanGame {
 
     /**
      * @param args the command line arguments

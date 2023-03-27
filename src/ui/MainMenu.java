@@ -52,15 +52,15 @@ public class MainMenu extends javax.swing.JFrame
         pnlAboutUs = new javax.swing.JPanel();
         lblAboutUs = new javax.swing.JLabel();
         btnClose_dlgAboutUs = new javax.swing.JButton();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        txtMemberName = new javax.swing.JTextPane();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        txtMemberRollNo = new javax.swing.JTextPane();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         ImageIcon fptLogo = new ImageIcon("src/images/2021-FPTU-Eng_143x72.png");
         lblLogo = new javax.swing.JLabel(fptLogo);
+        jScrollPane1 = new javax.swing.JScrollPane();
+        txtMemberName = new javax.swing.JEditorPane();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        txtMemberRollNo = new javax.swing.JEditorPane();
         jLabel1 = new javax.swing.JLabel();
         btnStartGame = new javax.swing.JButton();
         btnHowToPlay = new javax.swing.JButton();
@@ -161,16 +161,6 @@ public class MainMenu extends javax.swing.JFrame
             }
         });
 
-        txtMemberName.setEditable(false);
-        txtMemberName.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        txtMemberName.setFocusable(false);
-        jScrollPane2.setViewportView(txtMemberName);
-
-        txtMemberRollNo.setEditable(false);
-        txtMemberRollNo.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        txtMemberRollNo.setFocusable(false);
-        jScrollPane3.setViewportView(txtMemberRollNo);
-
         jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         jLabel2.setText("<html> This project was made by group 3, class SE1704, FPT University.<br> Semester: SP23<br> Subject: CSD201 (Data Structures and Algorithms)<br> Mentor: Vo Hong Khanh </html>");
 
@@ -183,6 +173,15 @@ public class MainMenu extends javax.swing.JFrame
         jLabel4.setText("Roll No.");
 
         lblLogo.setText("FPT Logo here");
+
+        txtMemberName.setContentType("text/html"); // NOI18N
+        txtMemberName.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
+        txtMemberName.setFocusable(false);
+        jScrollPane1.setViewportView(txtMemberName);
+
+        txtMemberRollNo.setContentType("text/html"); // NOI18N
+        txtMemberRollNo.setFocusable(false);
+        jScrollPane5.setViewportView(txtMemberRollNo);
 
         javax.swing.GroupLayout pnlAboutUsLayout = new javax.swing.GroupLayout(pnlAboutUs);
         pnlAboutUs.setLayout(pnlAboutUsLayout);
@@ -200,12 +199,12 @@ public class MainMenu extends javax.swing.JFrame
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(btnClose_dlgAboutUs, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(41, 41, 41))
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jScrollPane1))
                         .addGap(30, 30, 30)
-                        .addGroup(pnlAboutUsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGroup(pnlAboutUsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 172, Short.MAX_VALUE)
+                            .addComponent(jScrollPane5))))
                 .addGap(36, 36, 36))
         );
         pnlAboutUsLayout.setVerticalGroup(
@@ -220,9 +219,9 @@ public class MainMenu extends javax.swing.JFrame
                     .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addGroup(pnlAboutUsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(pnlAboutUsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 210, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1))
                 .addGap(18, 18, 18)
                 .addGroup(pnlAboutUsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblLogo, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -242,7 +241,7 @@ public class MainMenu extends javax.swing.JFrame
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Hangman v1.0.1");
+        setTitle("Hangman v1.1.0");
         setResizable(false);
 
         jLabel1.setFont(new java.awt.Font("Dialog", 1, 48)); // NOI18N
@@ -346,6 +345,9 @@ public class MainMenu extends javax.swing.JFrame
         "        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;\n" +
         "        font-size: 24;\n" +
         "      }\n" +
+        "      p {\n" + 
+        "        text-align: justify;\n" + 
+        "      }\n" +
         "      ol {\n" +
         "        text-align: justify;\n" +
         "      }\n" +
@@ -360,7 +362,9 @@ public class MainMenu extends javax.swing.JFrame
         "      <li>To reveal the entire word, you must choose the letters that make up the hidden word.</li>\n" +
         "      <li>If you choose a correct letter, that letter will be revealed on the hidden word and your score will be increased.</li>\n" +
         "      <li>Choose a wrong option, and the Hangman painting will have one extra stroke drawn. The game ends when the painting is completed.</li>\n" +
-        "      <li>There is no final level, your job is to complete as many word as possible and get the highest score.</li>\n" +
+        "      <li>For the \"Easy\", \"Normal\", \"Hard\" difficulty, all completed words will not be repeated." +
+        "          That means once you've completed all words of that difficulty, you will have completed that game.</li>\n" +
+        "      <li>For the \"Asian\" difficulty, there is no final level. All completed words will be repeated, your job is to complete as many word as possible and get the highest score.</li>\n" +
         "    </ol>\n" +
         "    <p>Good luck!</p>\n" +
         "  </html>";
@@ -385,18 +389,63 @@ public class MainMenu extends javax.swing.JFrame
 
     private void btnAboutUsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAboutUsActionPerformed
         // TODO add your handling code here:
-        String memberNames = "1. Truong Duy Minh\n"
-                + "2. Nguyen Huu Duy\n"
-                + "3. Hua Tien Thanh\n"
-                + "4. Phan Khanh Linh\n"
-                + "5. Vo Phuoc Tho\n"
-                + "6. Le Tan Quoc";
-        String memberRollNo = "CE170029\n"
-                + "CE170563\n"
-                + "CE171454\n"
-                + "CE171528\n"
-                + "CE161117\n"
-                + "CE161868";
+        String memberNames =
+        "  <html>\n" +
+        "    <style>\n" +
+        "      html {\n" +
+        "        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;\n" +
+        "        font-size: 24;\n" +
+        "      }\n" +
+        "      ol {\n" +
+        "        text-align: justify;\n" +
+        "        margin: 0px 25px\n" +
+        "      }\n" +
+        "      li {\n" +
+        "        margin: 0px\n" +
+        "      }\n" +
+        "    </style>\n" +
+        "    <body>\n" + 
+        "      <ol>\n" +
+        "      <li><strong>Truong Duy Minh (Leader)</strong></li>\n" +
+        "      <li>Nguyen Huu Duy</li>\n" +
+        "      <li>Hua Tien Thanh</li>\n" +
+        "      <li>Phan Khanh Linh</li>\n" +
+        "      <li>Vo Phuoc Tho</li>\n" +
+        "      <li>Le Tan Quoc</li>\n" +
+        "      </ol>\n" +
+        "    </body>\n" +
+        "  </html>";
+        String memberRollNo =
+        "  <html>\n" +
+        "    <style>\n" +
+        "      html {\n" +
+        "        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;\n" +
+        "        font-size: 24;\n" +
+        "      }\n" +
+        "      ul {\n" +
+        "        text-align: justify;\n" +
+        "        margin: 0px 0px\n" +
+        "      }\n" +
+        "      li {\n" +
+        "        margin: 0px\n" +
+        "      }\n" +
+        "    </style>\n" +
+        "    <body>\n" + 
+        "      <ul>\n" +
+        "      <li><strong>CE170029</strong></li>\n" +
+        "      <li>CE170563</li>\n" +
+        "      <li>CE171454</li>\n" +
+        "      <li>CE171528</li>\n" +
+        "      <li>CE161117</li>\n" +
+        "      <li>CE161868</li>\n" +
+        "      </ol>\n" +
+        "    </body>\n" +
+        "  </html>";
+        Font editorPaneFont = new Font("Segoe UI", Font.PLAIN, 24);
+        txtMemberName.putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES, Boolean.TRUE);
+        txtMemberRollNo.putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES, Boolean.TRUE);
+        txtMemberName.setFont(editorPaneFont);
+        txtMemberRollNo.setFont(editorPaneFont);
         txtMemberName.setText(memberNames);
         txtMemberRollNo.setText(memberRollNo);
         dlgAboutUs.setLocationRelativeTo(null);
@@ -457,16 +506,16 @@ public class MainMenu extends javax.swing.JFrame
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JLabel lblAboutUs;
     private javax.swing.JLabel lblHowToPlay;
     private javax.swing.JLabel lblLogo;
     private javax.swing.JPanel pnlAboutUs;
     private javax.swing.JEditorPane txtHowToPlay;
-    private javax.swing.JTextPane txtMemberName;
-    private javax.swing.JTextPane txtMemberRollNo;
+    private javax.swing.JEditorPane txtMemberName;
+    private javax.swing.JEditorPane txtMemberRollNo;
     // End of variables declaration//GEN-END:variables
 
     @Override

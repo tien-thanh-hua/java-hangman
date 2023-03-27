@@ -6,7 +6,7 @@
 package ui;
 
 import entities.Player;
-import hangmangame_group3_se1704.GameInstance;
+import main.GameInstance;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
@@ -62,7 +62,7 @@ public class MainGameFrame extends javax.swing.JFrame
      * Initializes the custom components in MainGameFrame.
      */
     public void initFrame() {
-        showChooseDifficultyDialog();
+        showChooseDifficulty();
 
         this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/images/hangman_128.png")));
         pnlDrawHangman.setLayout(null);
@@ -110,7 +110,7 @@ public class MainGameFrame extends javax.swing.JFrame
     /**
      * Display the choosing difficulty dialog.
      */
-    public void showChooseDifficultyDialog() {
+    public void showChooseDifficulty() {
         dlgChooseDifficulty.setLocationRelativeTo(null);
         dlgChooseDifficulty.setVisible(true);
     }
@@ -217,15 +217,15 @@ public class MainGameFrame extends javax.swing.JFrame
             game.increaseScore();
             updateLblScore();
         } else {
-            // Since "Asian" difficulty only has 2 lives, the first incorrent
-            // choice will push the Hangman to state = 8 (one more incorrect
-            // choice = game over).
+            // Since "Asian" difficulty only has 3 lives, the first incorrent
+            // choice will push the Hangman to state = 7 (two more incorrect
+            // choices = game over).
             
-            // Therefore, the next wrong choice will only +1 state (like it
+            // Therefore, the next wrong choices will only +1 state (like it
             // normally does).
             if (game.getDifficulty().equals("asian") 
-                    && hCanvas.getHangMan().getState() != 8) {
-                for (int i = 0; i < 5; i++) {
+                    && hCanvas.getHangMan().getState() < 7) {
+                while (hCanvas.getHangMan().getState() < 7) {
                     this.hCanvas.getHangMan().increaseState();
                 }
             } else {
@@ -235,6 +235,9 @@ public class MainGameFrame extends javax.swing.JFrame
         }
 
         if (game.isLevelCompleted()) {
+            if (game.isLastLevel()) {
+                showWin();
+            }
             // proceeds to next level
             levelComplete();
         } else if (game.isGameOver()) {
@@ -249,7 +252,7 @@ public class MainGameFrame extends javax.swing.JFrame
      */
     public void btnNewGameActionPerformed() {
         btnNewGame.setEnabled(false);
-        showChooseDifficultyDialog();
+        showChooseDifficulty();
         game.reset();
         resetFrame();
     }
@@ -333,6 +336,45 @@ public class MainGameFrame extends javax.swing.JFrame
         }
     }
 
+    public void showWin() {
+        disableLetterButtons();
+        ArrayList<Player> top5Players = game.getTop5Players();
+        int yourScore = game.getScore();
+        boolean isInTop5 = false;
+        ArrayList<Player> tempPlayers = game.getTop5Players();
+        for (Player p : top5Players) {
+            if (yourScore > p.getScore()) {
+                isInTop5 = true;
+                break;
+            }
+        }
+
+        if (isInTop5) { // opens top 5 win dialog
+            String top5Names = "", top5Scores = "";
+            for (int i = 1; i <= top5Players.size(); i++) {
+                top5Names += i + ". " + top5Players.get(i - 1).getName() + "\n";
+                top5Scores += top5Players.get(i - 1).getScore() + "\n";
+            }
+            top5Names = top5Names.substring(0, top5Names.length() - 1);
+            top5Scores = top5Scores.substring(0, top5Scores.length() - 1);
+
+            lblYourScore_dlgWinTop5.setText("Your Score: " + yourScore);
+            txtPlayerNames_dlgWinTop5.setText(top5Names);
+
+            setAlignmentRight(txtPlayerScores_dlgWinTop5);
+            txtPlayerScores_dlgWinTop5.setText(top5Scores);
+
+            dlgWinTop5.setLocationRelativeTo(null);
+            dlgWinTop5.setVisible(true);
+        } else { // opens normal win dialog
+            Player bestPlayer = game.getTop5Players().get(0);
+            int highScore = bestPlayer.getScore();
+            lblYourScore_dlgWin.setText("Your Score: " + yourScore);
+            dlgWin.setLocationRelativeTo(null);
+            dlgWin.setVisible(true);
+        }
+    }
+    
     /**
      * Displays a top 5 high scores dialog.
      */
@@ -367,6 +409,8 @@ public class MainGameFrame extends javax.swing.JFrame
             menu.setVisible(true);
             menu.setLocationRelativeTo(null);
             this.dispose();
+        } else {
+            this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         }
     }
 
@@ -392,7 +436,7 @@ public class MainGameFrame extends javax.swing.JFrame
         lblGameOver_dlgGameOverTop5 = new javax.swing.JLabel();
         lblYourScore_dlgGameOverTop5 = new javax.swing.JLabel();
         lblSubtitle = new javax.swing.JLabel();
-        lblTop5 = new javax.swing.JLabel();
+        lblTop5_dlgGameOverTop5 = new javax.swing.JLabel();
         btnSavePlayerName = new javax.swing.JButton();
         txtNameInput = new javax.swing.JTextField();
         txtPlayerScores_dlgGameOverTop5 = new javax.swing.JTextPane();
@@ -410,6 +454,22 @@ public class MainGameFrame extends javax.swing.JFrame
         txtPlayerNames_dlgHighScore = new javax.swing.JTextPane();
         txtPlayerScores_dlgHighScore = new javax.swing.JTextPane();
         btnClose_dlgHighScore = new javax.swing.JButton();
+        dlgWin = new javax.swing.JDialog();
+        jPanel6 = new javax.swing.JPanel();
+        lblWin_dlgWin = new javax.swing.JLabel();
+        lblMessage = new javax.swing.JLabel();
+        lblYourScore_dlgWin = new javax.swing.JLabel();
+        btnNewGame_dlgWin = new javax.swing.JButton();
+        dlgWinTop5 = new javax.swing.JDialog();
+        jPanel7 = new javax.swing.JPanel();
+        lblWin_dlgWinTop5 = new javax.swing.JLabel();
+        lblYourScore_dlgWinTop5 = new javax.swing.JLabel();
+        lblSubtitle1 = new javax.swing.JLabel();
+        lblTop5_dlgWin = new javax.swing.JLabel();
+        btnSavePlayerName1 = new javax.swing.JButton();
+        txtNameInput1 = new javax.swing.JTextField();
+        txtPlayerScores_dlgWinTop5 = new javax.swing.JTextPane();
+        txtPlayerNames_dlgWinTop5 = new javax.swing.JTextPane();
         pnlPlayArea = new javax.swing.JPanel();
         btnA = new javax.swing.JButton();
         btnB = new javax.swing.JButton();
@@ -574,10 +634,10 @@ public class MainGameFrame extends javax.swing.JFrame
         lblSubtitle.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lblSubtitle.setText("but you've got a really high score!");
 
-        lblTop5.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
-        lblTop5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lblTop5.setText("Top 5 Scores");
-        lblTop5.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+        lblTop5_dlgGameOverTop5.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        lblTop5_dlgGameOverTop5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblTop5_dlgGameOverTop5.setText("Top 5 Scores");
+        lblTop5_dlgGameOverTop5.setVerticalAlignment(javax.swing.SwingConstants.TOP);
 
         btnSavePlayerName.setBackground(new java.awt.Color(0, 153, 153));
         btnSavePlayerName.setFont(new java.awt.Font("Dialog", 0, 24)); // NOI18N
@@ -621,7 +681,7 @@ public class MainGameFrame extends javax.swing.JFrame
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(lblTop5, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblTop5_dlgGameOverTop5, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanel4Layout.createSequentialGroup()
                                 .addComponent(txtPlayerNames_dlgGameOverTop5)
                                 .addGap(18, 18, 18)
@@ -649,7 +709,7 @@ public class MainGameFrame extends javax.swing.JFrame
                 .addComponent(lblSubtitle, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblTop5)
+                    .addComponent(lblTop5_dlgGameOverTop5)
                     .addComponent(lblYourScore_dlgGameOverTop5))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -836,13 +896,13 @@ public class MainGameFrame extends javax.swing.JFrame
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(lblTop6)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txtPlayerNames_dlgHighScore, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtPlayerScores_dlgHighScore, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtPlayerScores_dlgHighScore, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtPlayerNames_dlgHighScore, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(btnClose_dlgHighScore)
-                .addContainerGap(36, Short.MAX_VALUE))
+                .addContainerGap(30, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout dlgHighScoreLayout = new javax.swing.GroupLayout(dlgHighScore.getContentPane());
@@ -856,8 +916,230 @@ public class MainGameFrame extends javax.swing.JFrame
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
+        dlgWin.setTitle("All Questions Completed!");
+        dlgWin.setAlwaysOnTop(true);
+        dlgWin.setBackground(new java.awt.Color(0, 102, 102));
+        dlgWin.setFocusable(false);
+        dlgWin.setModal(true);
+        dlgWin.setResizable(false);
+        dlgWin.setSize(new java.awt.Dimension(650, 411));
+        dlgWin.setType(java.awt.Window.Type.POPUP);
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, dlgWinTop5, org.jdesktop.beansbinding.ELProperty.create("true"), dlgWin, org.jdesktop.beansbinding.BeanProperty.create("undecorated"));
+        bindingGroup.addBinding(binding);
+
+        jPanel6.setBackground(new java.awt.Color(218, 255, 218));
+
+        lblWin_dlgWin.setBackground(new java.awt.Color(255, 255, 255));
+        lblWin_dlgWin.setFont(new java.awt.Font("Segoe UI", 1, 48)); // NOI18N
+        lblWin_dlgWin.setForeground(new java.awt.Color(0, 102, 51));
+        lblWin_dlgWin.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblWin_dlgWin.setText("<html><p style=\"text-align:center;\">ALL QUESTIONS<br>COMPLETED!</p></html>");
+        lblWin_dlgWin.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
+        lblWin_dlgWin.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+
+        lblMessage.setFont(new java.awt.Font("Dialog", 0, 24)); // NOI18N
+        lblMessage.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblMessage.setText("Perhaps it's time to try something harder...");
+        lblMessage.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+
+        lblYourScore_dlgWin.setFont(new java.awt.Font("Dialog", 0, 36)); // NOI18N
+        lblYourScore_dlgWin.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblYourScore_dlgWin.setText("Your Score: 420");
+        lblYourScore_dlgWin.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+
+        btnNewGame_dlgWin.setBackground(new java.awt.Color(0, 153, 153));
+        btnNewGame_dlgWin.setFont(new java.awt.Font("Dialog", 0, 24)); // NOI18N
+        btnNewGame_dlgWin.setForeground(new java.awt.Color(0, 102, 51));
+        btnNewGame_dlgWin.setText("New Game");
+        btnNewGame_dlgWin.setContentAreaFilled(false);
+        btnNewGame_dlgWin.setFocusPainted(false);
+        btnNewGame_dlgWin.setFocusable(false);
+        btnNewGame_dlgWin.setRequestFocusEnabled(false);
+        btnNewGame_dlgWin.setVerifyInputWhenFocusTarget(false);
+        btnNewGame_dlgWin.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNewGame_dlgWinActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
+        jPanel6.setLayout(jPanel6Layout);
+        jPanel6Layout.setHorizontalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnNewGame_dlgWin, javax.swing.GroupLayout.Alignment.CENTER, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblWin_dlgWin, javax.swing.GroupLayout.Alignment.CENTER, javax.swing.GroupLayout.DEFAULT_SIZE, 626, Short.MAX_VALUE)
+                    .addComponent(lblYourScore_dlgWin, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lblMessage, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        jPanel6Layout.setVerticalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(lblWin_dlgWin, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(lblMessage)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(lblYourScore_dlgWin)
+                .addGap(24, 24, 24)
+                .addComponent(btnNewGame_dlgWin)
+                .addContainerGap(58, Short.MAX_VALUE))
+        );
+
+        javax.swing.GroupLayout dlgWinLayout = new javax.swing.GroupLayout(dlgWin.getContentPane());
+        dlgWin.getContentPane().setLayout(dlgWinLayout);
+        dlgWinLayout.setHorizontalGroup(
+            dlgWinLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(dlgWinLayout.createSequentialGroup()
+                .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
+        dlgWinLayout.setVerticalGroup(
+            dlgWinLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(dlgWinLayout.createSequentialGroup()
+                .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
+
+        dlgWinTop5.setTitle("Game Over!");
+        dlgWinTop5.setAlwaysOnTop(true);
+        dlgWinTop5.setBackground(new java.awt.Color(0, 102, 102));
+        dlgWinTop5.setModal(true);
+        dlgWinTop5.setResizable(false);
+        dlgWinTop5.setSize(new java.awt.Dimension(690, 444));
+        dlgWinTop5.setType(java.awt.Window.Type.POPUP);
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, dlgWinTop5, org.jdesktop.beansbinding.ELProperty.create("true"), dlgWinTop5, org.jdesktop.beansbinding.BeanProperty.create("undecorated"));
+        bindingGroup.addBinding(binding);
+
+        dlgGameOverTop5.setUndecorated(true);
+
+        jPanel7.setBackground(new java.awt.Color(219, 255, 219));
+        jPanel7.setFocusable(false);
+
+        lblWin_dlgWinTop5.setBackground(new java.awt.Color(255, 255, 255));
+        lblWin_dlgWinTop5.setFont(new java.awt.Font("Segoe UI", 1, 48)); // NOI18N
+        lblWin_dlgWinTop5.setForeground(new java.awt.Color(0, 102, 51));
+        lblWin_dlgWinTop5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblWin_dlgWinTop5.setText("<html><p style=\"text-align:center;\">ALL QUESTIONS<br>COMPLETED!</p></html>");
+        lblWin_dlgWinTop5.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
+        lblWin_dlgWinTop5.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+
+        lblYourScore_dlgWinTop5.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        lblYourScore_dlgWinTop5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblYourScore_dlgWinTop5.setText("Your Score: 420");
+        lblYourScore_dlgWinTop5.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+
+        lblSubtitle1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        lblSubtitle1.setForeground(new java.awt.Color(0, 102, 102));
+        lblSubtitle1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblSubtitle1.setText("and you've also got a really high score!");
+
+        lblTop5_dlgWin.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        lblTop5_dlgWin.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lblTop5_dlgWin.setText("Top 5 Scores");
+        lblTop5_dlgWin.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+
+        btnSavePlayerName1.setBackground(new java.awt.Color(0, 153, 153));
+        btnSavePlayerName1.setFont(new java.awt.Font("Dialog", 0, 24)); // NOI18N
+        btnSavePlayerName1.setForeground(new java.awt.Color(0, 102, 51));
+        btnSavePlayerName1.setText("Save");
+        btnSavePlayerName1.setContentAreaFilled(false);
+        btnSavePlayerName1.setFocusPainted(false);
+        btnSavePlayerName1.setFocusable(false);
+        btnSavePlayerName1.setRequestFocusEnabled(false);
+        btnSavePlayerName1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSavePlayerName1ActionPerformed(evt);
+            }
+        });
+
+        txtNameInput1.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        txtNameInput1.setText("Player0");
+
+        txtPlayerScores_dlgWinTop5.setEditable(false);
+        txtPlayerScores_dlgWinTop5.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        txtPlayerScores_dlgWinTop5.setFocusCycleRoot(false);
+        txtPlayerScores_dlgWinTop5.setFocusable(false);
+        txtPlayerScores_dlgWinTop5.setOpaque(false);
+        txtPlayerScores_dlgWinTop5.setRequestFocusEnabled(false);
+        txtPlayerScores_dlgWinTop5.setVerifyInputWhenFocusTarget(false);
+
+        txtPlayerNames_dlgWinTop5.setEditable(false);
+        txtPlayerNames_dlgWinTop5.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        txtPlayerNames_dlgWinTop5.setFocusCycleRoot(false);
+        txtPlayerNames_dlgWinTop5.setFocusable(false);
+        txtPlayerNames_dlgWinTop5.setOpaque(false);
+        txtPlayerNames_dlgWinTop5.setRequestFocusEnabled(false);
+        txtPlayerNames_dlgWinTop5.setVerifyInputWhenFocusTarget(false);
+
+        javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
+        jPanel7.setLayout(jPanel7Layout);
+        jPanel7Layout.setHorizontalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel7Layout.createSequentialGroup()
+                .addGap(36, 36, 36)
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
+                        .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(lblTop5_dlgWin, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel7Layout.createSequentialGroup()
+                                .addComponent(txtPlayerNames_dlgWinTop5)
+                                .addGap(18, 18, 18)
+                                .addComponent(txtPlayerScores_dlgWinTop5, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel7Layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(lblYourScore_dlgWinTop5, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
+                                    .addComponent(txtNameInput1)))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btnSavePlayerName1, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(57, 57, 57))))
+                    .addComponent(lblWin_dlgWinTop5)
+                    .addComponent(lblSubtitle1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(36, Short.MAX_VALUE))
+        );
+        jPanel7Layout.setVerticalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel7Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(lblWin_dlgWinTop5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblSubtitle1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblTop5_dlgWin)
+                    .addComponent(lblYourScore_dlgWinTop5))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel7Layout.createSequentialGroup()
+                        .addComponent(txtNameInput1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(40, 40, 40)
+                        .addComponent(btnSavePlayerName1))
+                    .addComponent(txtPlayerScores_dlgWinTop5, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtPlayerNames_dlgWinTop5, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(24, Short.MAX_VALUE))
+        );
+
+        javax.swing.GroupLayout dlgWinTop5Layout = new javax.swing.GroupLayout(dlgWinTop5.getContentPane());
+        dlgWinTop5.getContentPane().setLayout(dlgWinTop5Layout);
+        dlgWinTop5Layout.setHorizontalGroup(
+            dlgWinTop5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+        );
+        dlgWinTop5Layout.setVerticalGroup(
+            dlgWinTop5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+        );
+
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Hangman v1.0.1");
+        setTitle("Hangman v1.1.0");
         setResizable(false);
 
         pnlPlayArea.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Word Display", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Dialog", 1, 14))); // NOI18N
@@ -865,6 +1147,7 @@ public class MainGameFrame extends javax.swing.JFrame
         btnA.setFont(new java.awt.Font("Tahoma", 0, 22)); // NOI18N
         btnA.setText("A");
         btgLetterButtons.add(btnA);
+        btnA.setFocusPainted(false);
         btnA.setMaximumSize(new java.awt.Dimension(55, 40));
         btnA.setMinimumSize(new java.awt.Dimension(55, 40));
         btnA.setPreferredSize(new java.awt.Dimension(55, 40));
@@ -877,6 +1160,7 @@ public class MainGameFrame extends javax.swing.JFrame
         btnB.setFont(new java.awt.Font("Tahoma", 0, 22)); // NOI18N
         btnB.setText("B");
         btgLetterButtons.add(btnB);
+        btnB.setFocusPainted(false);
         btnB.setMaximumSize(new java.awt.Dimension(55, 40));
         btnB.setMinimumSize(new java.awt.Dimension(55, 40));
         btnB.setPreferredSize(new java.awt.Dimension(55, 40));
@@ -889,6 +1173,7 @@ public class MainGameFrame extends javax.swing.JFrame
         btnD.setFont(new java.awt.Font("Tahoma", 0, 22)); // NOI18N
         btnD.setText("D");
         btgLetterButtons.add(btnD);
+        btnD.setFocusPainted(false);
         btnD.setMaximumSize(new java.awt.Dimension(55, 40));
         btnD.setMinimumSize(new java.awt.Dimension(55, 40));
         btnD.setPreferredSize(new java.awt.Dimension(55, 40));
@@ -901,6 +1186,7 @@ public class MainGameFrame extends javax.swing.JFrame
         btnC.setFont(new java.awt.Font("Tahoma", 0, 22)); // NOI18N
         btnC.setText("C");
         btgLetterButtons.add(btnC);
+        btnC.setFocusPainted(false);
         btnC.setMaximumSize(new java.awt.Dimension(55, 40));
         btnC.setMinimumSize(new java.awt.Dimension(55, 40));
         btnC.setPreferredSize(new java.awt.Dimension(55, 40));
@@ -913,6 +1199,7 @@ public class MainGameFrame extends javax.swing.JFrame
         btnG.setFont(new java.awt.Font("Tahoma", 0, 22)); // NOI18N
         btnG.setText("G");
         btgLetterButtons.add(btnG);
+        btnG.setFocusPainted(false);
         btnG.setMaximumSize(new java.awt.Dimension(55, 40));
         btnG.setMinimumSize(new java.awt.Dimension(55, 40));
         btnG.setPreferredSize(new java.awt.Dimension(55, 40));
@@ -925,6 +1212,7 @@ public class MainGameFrame extends javax.swing.JFrame
         btnH.setFont(new java.awt.Font("Tahoma", 0, 22)); // NOI18N
         btnH.setText("H");
         btgLetterButtons.add(btnH);
+        btnH.setFocusPainted(false);
         btnH.setMaximumSize(new java.awt.Dimension(55, 40));
         btnH.setMinimumSize(new java.awt.Dimension(55, 40));
         btnH.setPreferredSize(new java.awt.Dimension(55, 40));
@@ -937,6 +1225,7 @@ public class MainGameFrame extends javax.swing.JFrame
         btnF.setFont(new java.awt.Font("Tahoma", 0, 22)); // NOI18N
         btnF.setText("F");
         btgLetterButtons.add(btnF);
+        btnF.setFocusPainted(false);
         btnF.setMaximumSize(new java.awt.Dimension(55, 40));
         btnF.setMinimumSize(new java.awt.Dimension(55, 40));
         btnF.setPreferredSize(new java.awt.Dimension(55, 40));
@@ -949,6 +1238,7 @@ public class MainGameFrame extends javax.swing.JFrame
         btnE.setFont(new java.awt.Font("Tahoma", 0, 22)); // NOI18N
         btnE.setText("E");
         btgLetterButtons.add(btnE);
+        btnE.setFocusPainted(false);
         btnE.setMaximumSize(new java.awt.Dimension(55, 40));
         btnE.setMinimumSize(new java.awt.Dimension(55, 40));
         btnE.setPreferredSize(new java.awt.Dimension(55, 40));
@@ -961,6 +1251,7 @@ public class MainGameFrame extends javax.swing.JFrame
         btnO.setFont(new java.awt.Font("Tahoma", 0, 22)); // NOI18N
         btnO.setText("O");
         btgLetterButtons.add(btnO);
+        btnO.setFocusPainted(false);
         btnO.setMaximumSize(new java.awt.Dimension(55, 40));
         btnO.setMinimumSize(new java.awt.Dimension(55, 40));
         btnO.setPreferredSize(new java.awt.Dimension(55, 40));
@@ -973,6 +1264,7 @@ public class MainGameFrame extends javax.swing.JFrame
         btnN.setFont(new java.awt.Font("Tahoma", 0, 22)); // NOI18N
         btnN.setText("N");
         btgLetterButtons.add(btnN);
+        btnN.setFocusPainted(false);
         btnN.setMaximumSize(new java.awt.Dimension(55, 40));
         btnN.setMinimumSize(new java.awt.Dimension(55, 40));
         btnN.setPreferredSize(new java.awt.Dimension(55, 40));
@@ -985,6 +1277,7 @@ public class MainGameFrame extends javax.swing.JFrame
         btnM.setFont(new java.awt.Font("Tahoma", 0, 22)); // NOI18N
         btnM.setText("M");
         btgLetterButtons.add(btnM);
+        btnM.setFocusPainted(false);
         btnM.setMaximumSize(new java.awt.Dimension(55, 40));
         btnM.setMinimumSize(new java.awt.Dimension(55, 40));
         btnM.setPreferredSize(new java.awt.Dimension(55, 40));
@@ -997,6 +1290,7 @@ public class MainGameFrame extends javax.swing.JFrame
         btnP.setFont(new java.awt.Font("Tahoma", 0, 22)); // NOI18N
         btnP.setText("P");
         btgLetterButtons.add(btnP);
+        btnP.setFocusPainted(false);
         btnP.setMaximumSize(new java.awt.Dimension(55, 40));
         btnP.setMinimumSize(new java.awt.Dimension(55, 40));
         btnP.setPreferredSize(new java.awt.Dimension(55, 40));
@@ -1009,6 +1303,7 @@ public class MainGameFrame extends javax.swing.JFrame
         btnI.setFont(new java.awt.Font("Tahoma", 0, 22)); // NOI18N
         btnI.setText("I");
         btgLetterButtons.add(btnI);
+        btnI.setFocusPainted(false);
         btnI.setMaximumSize(new java.awt.Dimension(55, 40));
         btnI.setMinimumSize(new java.awt.Dimension(55, 40));
         btnI.setPreferredSize(new java.awt.Dimension(55, 40));
@@ -1021,6 +1316,7 @@ public class MainGameFrame extends javax.swing.JFrame
         btnJ.setFont(new java.awt.Font("Tahoma", 0, 22)); // NOI18N
         btnJ.setText("J");
         btgLetterButtons.add(btnJ);
+        btnJ.setFocusPainted(false);
         btnJ.setMaximumSize(new java.awt.Dimension(55, 40));
         btnJ.setMinimumSize(new java.awt.Dimension(55, 40));
         btnJ.setPreferredSize(new java.awt.Dimension(55, 40));
@@ -1033,6 +1329,7 @@ public class MainGameFrame extends javax.swing.JFrame
         btnK.setFont(new java.awt.Font("Tahoma", 0, 22)); // NOI18N
         btnK.setText("K");
         btgLetterButtons.add(btnK);
+        btnK.setFocusPainted(false);
         btnK.setMaximumSize(new java.awt.Dimension(55, 40));
         btnK.setMinimumSize(new java.awt.Dimension(55, 40));
         btnK.setPreferredSize(new java.awt.Dimension(55, 40));
@@ -1045,6 +1342,7 @@ public class MainGameFrame extends javax.swing.JFrame
         btnL.setFont(new java.awt.Font("Tahoma", 0, 22)); // NOI18N
         btnL.setText("L");
         btgLetterButtons.add(btnL);
+        btnL.setFocusPainted(false);
         btnL.setMaximumSize(new java.awt.Dimension(55, 40));
         btnL.setMinimumSize(new java.awt.Dimension(55, 40));
         btnL.setPreferredSize(new java.awt.Dimension(55, 40));
@@ -1057,6 +1355,7 @@ public class MainGameFrame extends javax.swing.JFrame
         btnW.setFont(new java.awt.Font("Tahoma", 0, 22)); // NOI18N
         btnW.setText("W");
         btgLetterButtons.add(btnW);
+        btnW.setFocusPainted(false);
         btnW.setMaximumSize(new java.awt.Dimension(55, 40));
         btnW.setMinimumSize(new java.awt.Dimension(55, 40));
         btnW.setPreferredSize(new java.awt.Dimension(55, 40));
@@ -1069,6 +1368,7 @@ public class MainGameFrame extends javax.swing.JFrame
         btnV.setFont(new java.awt.Font("Tahoma", 0, 22)); // NOI18N
         btnV.setText("V");
         btgLetterButtons.add(btnV);
+        btnV.setFocusPainted(false);
         btnV.setMaximumSize(new java.awt.Dimension(55, 40));
         btnV.setMinimumSize(new java.awt.Dimension(55, 40));
         btnV.setPreferredSize(new java.awt.Dimension(55, 40));
@@ -1081,6 +1381,7 @@ public class MainGameFrame extends javax.swing.JFrame
         btnU.setFont(new java.awt.Font("Tahoma", 0, 22)); // NOI18N
         btnU.setText("U");
         btgLetterButtons.add(btnU);
+        btnU.setFocusPainted(false);
         btnU.setMaximumSize(new java.awt.Dimension(55, 40));
         btnU.setMinimumSize(new java.awt.Dimension(55, 40));
         btnU.setPreferredSize(new java.awt.Dimension(55, 40));
@@ -1093,6 +1394,7 @@ public class MainGameFrame extends javax.swing.JFrame
         btnX.setFont(new java.awt.Font("Tahoma", 0, 22)); // NOI18N
         btnX.setText("X");
         btgLetterButtons.add(btnX);
+        btnX.setFocusPainted(false);
         btnX.setMaximumSize(new java.awt.Dimension(55, 40));
         btnX.setMinimumSize(new java.awt.Dimension(55, 40));
         btnX.setPreferredSize(new java.awt.Dimension(55, 40));
@@ -1105,6 +1407,7 @@ public class MainGameFrame extends javax.swing.JFrame
         btnQ.setFont(new java.awt.Font("Tahoma", 0, 22)); // NOI18N
         btnQ.setText("Q");
         btgLetterButtons.add(btnQ);
+        btnQ.setFocusPainted(false);
         btnQ.setMaximumSize(new java.awt.Dimension(55, 40));
         btnQ.setMinimumSize(new java.awt.Dimension(55, 40));
         btnQ.setPreferredSize(new java.awt.Dimension(55, 40));
@@ -1117,6 +1420,7 @@ public class MainGameFrame extends javax.swing.JFrame
         btnR.setFont(new java.awt.Font("Tahoma", 0, 22)); // NOI18N
         btnR.setText("R");
         btgLetterButtons.add(btnR);
+        btnR.setFocusPainted(false);
         btnR.setMaximumSize(new java.awt.Dimension(55, 40));
         btnR.setMinimumSize(new java.awt.Dimension(55, 40));
         btnR.setPreferredSize(new java.awt.Dimension(55, 40));
@@ -1129,6 +1433,7 @@ public class MainGameFrame extends javax.swing.JFrame
         btnS.setFont(new java.awt.Font("Tahoma", 0, 22)); // NOI18N
         btnS.setText("S");
         btgLetterButtons.add(btnS);
+        btnS.setFocusPainted(false);
         btnS.setMaximumSize(new java.awt.Dimension(55, 40));
         btnS.setMinimumSize(new java.awt.Dimension(55, 40));
         btnS.setPreferredSize(new java.awt.Dimension(55, 40));
@@ -1141,6 +1446,7 @@ public class MainGameFrame extends javax.swing.JFrame
         btnT.setFont(new java.awt.Font("Tahoma", 0, 22)); // NOI18N
         btnT.setText("T");
         btgLetterButtons.add(btnT);
+        btnT.setFocusPainted(false);
         btnT.setMaximumSize(new java.awt.Dimension(55, 40));
         btnT.setMinimumSize(new java.awt.Dimension(55, 40));
         btnT.setPreferredSize(new java.awt.Dimension(55, 40));
@@ -1153,6 +1459,7 @@ public class MainGameFrame extends javax.swing.JFrame
         btnY.setFont(new java.awt.Font("Tahoma", 0, 22)); // NOI18N
         btnY.setText("Y");
         btgLetterButtons.add(btnY);
+        btnY.setFocusPainted(false);
         btnY.setMaximumSize(new java.awt.Dimension(55, 40));
         btnY.setMinimumSize(new java.awt.Dimension(55, 40));
         btnY.setPreferredSize(new java.awt.Dimension(55, 40));
@@ -1165,6 +1472,7 @@ public class MainGameFrame extends javax.swing.JFrame
         btnZ.setFont(new java.awt.Font("Tahoma", 0, 22)); // NOI18N
         btnZ.setText("Z");
         btgLetterButtons.add(btnZ);
+        btnZ.setFocusPainted(false);
         btnZ.setMaximumSize(new java.awt.Dimension(55, 40));
         btnZ.setMinimumSize(new java.awt.Dimension(55, 40));
         btnZ.setPreferredSize(new java.awt.Dimension(55, 40));
@@ -1708,6 +2016,21 @@ public class MainGameFrame extends javax.swing.JFrame
         this.windowClosing(null);
     }//GEN-LAST:event_btnMainMenuActionPerformed
 
+    private void btnNewGame_dlgWinActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewGame_dlgWinActionPerformed
+        // TODO add your handling code here:
+        dlgWin.setVisible(false);
+        btnNewGameActionPerformed();
+    }//GEN-LAST:event_btnNewGame_dlgWinActionPerformed
+
+    private void btnSavePlayerName1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSavePlayerName1ActionPerformed
+        // TODO add your handling code here:
+        String name = txtNameInput.getText();
+        game.savePlayer(name);
+        game.updateScoreFile();
+        dlgWinTop5.setVisible(false);
+        btnNewGameActionPerformed();
+    }//GEN-LAST:event_btnSavePlayerName1ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -1768,6 +2091,7 @@ public class MainGameFrame extends javax.swing.JFrame
     private javax.swing.JButton btnN;
     private javax.swing.JButton btnNewGame;
     private javax.swing.JButton btnNewGame_dlgGameOver;
+    private javax.swing.JButton btnNewGame_dlgWin;
     private javax.swing.JButton btnNextLevel;
     private javax.swing.JButton btnNormal;
     private javax.swing.JButton btnO;
@@ -1776,6 +2100,7 @@ public class MainGameFrame extends javax.swing.JFrame
     private javax.swing.JButton btnR;
     private javax.swing.JButton btnS;
     private javax.swing.JButton btnSavePlayerName;
+    private javax.swing.JButton btnSavePlayerName1;
     private javax.swing.JButton btnT;
     private javax.swing.JButton btnU;
     private javax.swing.JButton btnV;
@@ -1787,6 +2112,8 @@ public class MainGameFrame extends javax.swing.JFrame
     private javax.swing.JDialog dlgGameOver;
     private javax.swing.JDialog dlgGameOverTop5;
     private javax.swing.JDialog dlgHighScore;
+    private javax.swing.JDialog dlgWin;
+    private javax.swing.JDialog dlgWinTop5;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel4;
@@ -1794,29 +2121,41 @@ public class MainGameFrame extends javax.swing.JFrame
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
+    private javax.swing.JPanel jPanel7;
     private javax.swing.JLabel lblDifficulty;
     private javax.swing.JLabel lblGameOver_dlgGameOver;
     private javax.swing.JLabel lblGameOver_dlgGameOverTop5;
     private javax.swing.JLabel lblHighScore;
     private javax.swing.JLabel lblLevel;
     private javax.swing.JLabel lblLevelTxt;
+    private javax.swing.JLabel lblMessage;
     private javax.swing.JLabel lblPlayerScore;
     private javax.swing.JLabel lblSubtitle;
-    private javax.swing.JLabel lblTop5;
+    private javax.swing.JLabel lblSubtitle1;
+    private javax.swing.JLabel lblTop5_dlgGameOverTop5;
+    private javax.swing.JLabel lblTop5_dlgWin;
     private javax.swing.JLabel lblTop6;
     private javax.swing.JLabel lblTopic;
     private javax.swing.JLabel lblTopicTxt;
+    private javax.swing.JLabel lblWin_dlgWin;
+    private javax.swing.JLabel lblWin_dlgWinTop5;
     private javax.swing.JLabel lblYourScore_dlgGameOver;
     private javax.swing.JLabel lblYourScore_dlgGameOverTop5;
+    private javax.swing.JLabel lblYourScore_dlgWin;
+    private javax.swing.JLabel lblYourScore_dlgWinTop5;
     private javax.swing.JPanel pnlBackground;
     private javax.swing.JPanel pnlDrawHangman;
     private javax.swing.JPanel pnlPlayArea;
     private javax.swing.JPanel pnlPlayerInfo;
     private javax.swing.JTextField txtNameInput;
+    private javax.swing.JTextField txtNameInput1;
     private javax.swing.JTextPane txtPlayerNames_dlgGameOverTop5;
     private javax.swing.JTextPane txtPlayerNames_dlgHighScore;
+    private javax.swing.JTextPane txtPlayerNames_dlgWinTop5;
     private javax.swing.JTextPane txtPlayerScores_dlgGameOverTop5;
     private javax.swing.JTextPane txtPlayerScores_dlgHighScore;
+    private javax.swing.JTextPane txtPlayerScores_dlgWinTop5;
     private javax.swing.JLabel txtSecretWord;
     private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package hangmangame_group3_se1704;
+package main;
 
 import entities.Hangman;
 import entities.Player;
@@ -39,6 +39,7 @@ public class GameInstance {
     
     HashMap<String, Word> normalWords;
     HashMap<String, Word> hardWords;
+    private boolean isListEmpty;
     
     private ArrayList<Player> top5Players;
     private Player player;
@@ -58,8 +59,13 @@ public class GameInstance {
         this.top5Players = new ArrayList<>();
         this.player = new Player("", 0); // current player data is empty
         
+        isListEmpty = true;
         readScoreFile();
         readWordFiles();
+        // Uncomment the line below to use the default word list (for testing).
+        // If so, comment the line above this to prevent loading both normal and
+        // default word lists.
+        //readDefaultWordFile();
     }
 
     /**
@@ -342,6 +348,15 @@ public class GameInstance {
     }
 
     /**
+     * Checks whether normalWords or hardWords list is empty.
+     * @return true if either list is empty, false if there is at least an
+     * element in both lists
+     */
+    public boolean isListEmpty() {
+        return isListEmpty;
+    }
+
+    /**
      * Reads all word files that has a topic. Since the default words file does
      * not have a topic in its name, it will not be read.
      */
@@ -383,6 +398,7 @@ public class GameInstance {
                 
                 normalWords.putAll(tmpNormalWords);
                 hardWords.putAll(tmpHardWords);
+                isListEmpty = false;
                 if (fileSc != null) {
                     fileSc.close();
                 }
@@ -434,7 +450,7 @@ public class GameInstance {
                 
                 normalWords.putAll(tmpNormalWords);
                 hardWords.putAll(tmpHardWords);
-                
+                isListEmpty = false;
                 fileSc.close();
                 isFileSuccessfullyRead = true;
             } catch (FileNotFoundException e) {
@@ -669,6 +685,7 @@ public class GameInstance {
      * Resets the game's Hangman and changes the Question to a random one.
      */
     public void nextLevel() {
+        removeWordFromList();
         setDifficulty(difficulty);
         setRandomQuestion(difficulty);
     }
@@ -691,6 +708,7 @@ public class GameInstance {
         String wordTopic = "";
         if (difficulty.equals("easy") || difficulty.equals("normal")) {
             wordList.addAll(normalWords.keySet()); // stores keys from normalWords
+            System.out.println("Current list size: " + wordList.size());
             index = randomIndexGenerator.nextInt(wordList.size());
             randomWord = normalWords.get(wordList.get(index));
             wordStr = randomWord.getWord();
@@ -698,6 +716,7 @@ public class GameInstance {
         } else {
             wordList.addAll(hardWords.keySet()); // stores keys from normalWords
             index = randomIndexGenerator.nextInt(wordList.size());
+            System.out.println("Current list size: " + wordList.size());
             randomWord = hardWords.get(wordList.get(index));
             wordStr = randomWord.getWord();
             wordTopic = randomWord.getTopic();
@@ -710,5 +729,43 @@ public class GameInstance {
         }
         // Uncomment next line to enable cheating. Shame on you!
         System.out.println("Hidden word: " + wordStr);
+    }
+    
+    /**
+     * Removes the current word from the list of words (chosen word list depends
+     * on the current difficulty).
+     * Does nothing if difficulty is "Asian".<br>
+     * This method should be called after the level is completed, but before the
+     * "Next Level" button is unlocked.
+     */
+    public void removeWordFromList() {
+        if (!isListEmpty) // either list is not empty yet
+            switch (difficulty) {
+                case "easy":
+                case "normal":
+                    normalWords.remove(this.question.getSecretString());
+                    break;
+                case "hard":
+                    hardWords.remove(this.question.getSecretString());
+                    break;
+            }
+        // When this code block is run, the next removeWordFromList 
+        // will not be run.
+        // Under most circumstances this is redundant thanks to isLastLevel().
+        // However, this works as a safety measure in case isLastLevel() does not
+        // run properly.
+        if (normalWords.isEmpty() || hardWords.isEmpty()) {
+            isListEmpty = true;
+        }
+    }
+
+    /**
+     * Checks if the current game level is the final level, based on the number
+     * of remaining words in either normalWords or hardWords.
+     * 
+     * @return true if either lists have a size of 1, false otherwise
+     */
+    public boolean isLastLevel() {
+        return (normalWords.size() == 1 || hardWords.size() == 1);
     }
 }
