@@ -679,6 +679,9 @@ public class GameInstance {
     public void reset() {
         this.score = 0;
         this.level = 0;
+        normalWords.clear();
+        hardWords.clear();
+        readWordFiles();
     }
 
     /**
