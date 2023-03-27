@@ -10,7 +10,13 @@ import java.util.Collections;
 import java.util.HashMap;
 
 /**
- *
+ * Object that stores current game session's word information, such as the
+ * hidden word, user's current word progress, its topic.<br>
+ * Not to be confused with Word object, which can be considered as the primitive
+ * version of Question (that is, Words are simply Questions without the complicated
+ * attributes and methods used by the game).<br>
+ * This object should be used from within the game, and there should only be one
+ * instance of this Question per game session.
  * @author CE171454 Hua Tien Thanh
  */
 public class Question {

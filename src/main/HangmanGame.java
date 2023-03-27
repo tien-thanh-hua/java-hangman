@@ -8,7 +8,7 @@ package main;
 import ui.MainMenu;
 
 /**
- *
+ * The default class only used to play the game.
  * @author CE171454 Hua Tien Thanh
  */
 public class HangmanGame {

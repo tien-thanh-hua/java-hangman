@@ -11,7 +11,7 @@ import java.awt.Graphics2D;
 import javax.swing.JPanel;
 
 /**
- *
+ * Hangman drawing canvas used for MainGameFrame.
  * @author CE171454 Hua Tien Thanh
  */
 public class HangmanCanvas extends JPanel{

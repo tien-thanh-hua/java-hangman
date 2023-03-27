@@ -25,7 +25,8 @@ import java.util.Random;
 import java.util.Scanner;
 
 /**
- *
+ * The "brain" of the game. Contains most (if not all) the logic of the game.
+ * This should be created through MainMenu, not directly.
  * @author CE171454 Hua Tien Thanh
  */
 public class GameInstance {

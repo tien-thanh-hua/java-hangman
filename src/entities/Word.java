@@ -6,7 +6,10 @@
 package entities;
 
 /**
- *
+ * The basic object that stores words' word and topic.<br>
+ * Not to be confused with Question object which is a more complex version of Word
+ * that has more attributes and methods.<br>
+ * This object should be used when importing lists of words from external files.
  * @author CE171454 Hua Tien Thanh
  */
 public class Word {

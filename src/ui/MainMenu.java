@@ -16,7 +16,9 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 /**
- *
+ * The class responsible for displaying the menu options, and to launch the game.
+ * Create and run an instance of this Object in HangmanGame.java to launch the
+ * application.
  * @author CE170028 Truong Duy Minh, CE171454 Hua Tien Thanh
  */
 public class MainMenu extends javax.swing.JFrame 
@@ -241,7 +243,7 @@ public class MainMenu extends javax.swing.JFrame
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Hangman v1.1.0");
+        setTitle("Hangman v1.1.1");
         setResizable(false);
 
         jLabel1.setFont(new java.awt.Font("Dialog", 1, 48)); // NOI18N

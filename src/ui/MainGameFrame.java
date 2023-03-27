@@ -27,7 +27,7 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
 /**
- *
+ * Main display class of the game.
  * @author CE171454 Hua Tien Thanh
  */
 public class MainGameFrame extends javax.swing.JFrame
@@ -252,8 +252,8 @@ public class MainGameFrame extends javax.swing.JFrame
      */
     public void btnNewGameActionPerformed() {
         btnNewGame.setEnabled(false);
-        showChooseDifficulty();
         game.reset();
+        showChooseDifficulty();
         resetFrame();
     }
 
@@ -1139,7 +1139,7 @@ public class MainGameFrame extends javax.swing.JFrame
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Hangman v1.1.0");
+        setTitle("Hangman v1.1.1");
         setResizable(false);
 
         pnlPlayArea.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Word Display", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Dialog", 1, 14))); // NOI18N

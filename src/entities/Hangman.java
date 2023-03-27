@@ -12,7 +12,8 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 
 /**
- *
+ * Hangman object that stores the actual painting's coordinates and state that 
+ * is used by the GameInstance..
  * @author CE171454 Hua Tien Thanh
  */
 public class Hangman {

@@ -6,7 +6,7 @@
 package entities;
 
 /**
- *
+ * A simple Player object to keep track of the current game session's players.
  * @author CE171454 Hua Tien Thanh
  */
 public class Player {
